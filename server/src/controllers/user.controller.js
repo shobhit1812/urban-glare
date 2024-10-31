@@ -33,7 +33,6 @@ const registerUser = async (req, res) => {
     }
 
     return res.status(201).json({
-      status: 200,
       message: "User Registered Successfully",
       user: createdUser,
     });
@@ -79,7 +78,6 @@ const loginUser = async (req, res) => {
     };
 
     return res.status(200).cookie("token", token, options).json({
-      status: 200,
       message: "User logged in successfully.",
       token: token,
       user: loggedInUser,
@@ -89,4 +87,32 @@ const loginUser = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser };
+const logoutUser = async (req, res) => {
+  try {
+    const { _id } = req.user;
+    console.log("req.user: ", req.user);
+
+    await User.findByIdAndUpdate(
+      _id,
+      {
+        $set: { token: null },
+      },
+      { new: true }
+    );
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    };
+
+    return res
+      .status(200)
+      .clearCookie("token", options)
+      .json({ message: "User Logged Out Successfully" });
+  } catch (error) {
+    res.status(500).send("Internal Server Error: " + error.message);
+  }
+};
+
+export { registerUser, loginUser, logoutUser };
