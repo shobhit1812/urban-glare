@@ -6,9 +6,6 @@ const verifyJWT = async (req, res, next) => {
     const token =
       req.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
 
-    console.log(req.cookies);
-    console.log(req.header);
-
     if (!token) {
       return res.status(401).send("Unauthorized request: No token provided.");
     }
@@ -16,10 +13,8 @@ const verifyJWT = async (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
 
     const user = await User.findById(decodedToken?._id).select(
-      "-password -token"
+      "-fullName -username -password -isAdmin -token -createdAt -updatedAt -__v"
     );
-
-    console.log("verify jwt", user);
 
     if (!user) {
       return res.status(401).send("Unauthorized request: Invalid token.");

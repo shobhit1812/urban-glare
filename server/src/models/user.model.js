@@ -6,34 +6,59 @@ const userSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
-      required: [true, "Full name is required"],
+      required: true,
       trim: true,
-      minLength: 4,
-      maxLength: 24,
+      // NOTE: minLength and maxLength are replaced by validate
+      validate: [
+        {
+          validator: (v) => v.length >= 4,
+          message: "Full name should not be less than 4 characters",
+        },
+        {
+          validator: (v) => v.length <= 40,
+          message: "Full name should not be more than 40 characters",
+        },
+      ],
     },
     email: {
       type: String,
-      required: [true, "EmailId is required"],
+      required: true,
       index: true,
       unique: true,
       trim: true,
       lowercase: true,
-      minLength: 4,
-      maxLength: 38,
+      validate: [
+        {
+          validator: (v) => v.length >= 4,
+          message: "Email should not be less than 4 characters",
+        },
+        {
+          validator: (v) => v.length <= 58,
+          message: "Email should not be more than 58 characters",
+        },
+      ],
     },
     username: {
       type: String,
-      required: [true, "Username is required"],
+      required: true,
       index: true,
       unique: true,
       trim: true,
       lowercase: true,
-      minLength: 4,
-      maxLength: 24,
+      validate: [
+        {
+          validator: (v) => v.length >= 4,
+          message: "Username should not be less than 4 characters",
+        },
+        {
+          validator: (v) => v.length <= 24,
+          message: "Username should not be more than 24 characters",
+        },
+      ],
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: true,
     },
     isAdmin: {
       type: Boolean,
@@ -42,7 +67,6 @@ const userSchema = new mongoose.Schema(
     token: {
       type: String,
     },
-    // NOTE: Cart, Notifications etc.
   },
   { timestamps: true }
 );

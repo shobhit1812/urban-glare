@@ -67,8 +67,11 @@ const loginUser = async (req, res) => {
       return res.status(500).send("Error while generating token.");
     }
 
+    user.token = token;
+    await user.save({ validateBeforeSave: false });
+
     const loggedInUser = await User.findById(user._id).select(
-      "-fullName -username -password -isAdmin -token -createdAt -updatedAt -__v"
+      "-fullName -username -password -isAdmin -token  -updatedAt -__v"
     );
 
     const options = {
@@ -79,8 +82,8 @@ const loginUser = async (req, res) => {
 
     return res.status(200).cookie("token", token, options).json({
       message: "User logged in successfully.",
-      token: token,
       user: loggedInUser,
+      token: token,
     });
   } catch (error) {
     res.status(500).send("Internal Server Error: " + error.message);
@@ -90,7 +93,6 @@ const loginUser = async (req, res) => {
 const logoutUser = async (req, res) => {
   try {
     const { _id } = req.user;
-    console.log("req.user: ", req.user);
 
     await User.findByIdAndUpdate(
       _id,
