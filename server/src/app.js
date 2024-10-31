@@ -16,8 +16,4 @@ app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-app.get("/", (_, res) => {
-  res.send({ status: 200, message: "ok" });
-});
-
-export { app };
+export default app;
