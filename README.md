@@ -22,6 +22,6 @@ Sort in brands; like [Levi, Puma, Wrogn, etc]
 
 ### User Models
 
-Name, email, username, password, isAdmin: by default false, cart, orders
+Name, email, username, password, isAdmin: by default false, cart, orders, token
 
 ### Product Models
