@@ -29,11 +29,11 @@ const registerUser = async (req, res) => {
     if (!createdUser) {
       return res
         .status(500)
-        .send("Something went wrong while registering the user");
+        .send("Something went wrong while registering the user.");
     }
 
     return res.status(201).json({
-      message: "User Registered Successfully",
+      message: "User registered successfully.",
       user: createdUser,
     });
   } catch (error) {
@@ -71,7 +71,7 @@ const loginUser = async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     const loggedInUser = await User.findById(user._id).select(
-      "-fullName -username -password -isAdmin -token  -updatedAt -__v"
+      "-fullName -username -password -isAdmin -token -createdAt -updatedAt -__v"
     );
 
     const options = {
@@ -111,7 +111,7 @@ const logoutUser = async (req, res) => {
     return res
       .status(200)
       .clearCookie("token", options)
-      .json({ message: "User Logged Out Successfully" });
+      .json({ message: "User logged out successfully." });
   } catch (error) {
     res.status(500).send("Internal Server Error: " + error.message);
   }
