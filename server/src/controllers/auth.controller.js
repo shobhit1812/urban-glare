@@ -22,9 +22,16 @@ const registerUser = async (req, res) => {
       password,
     });
 
-    const createdUser = await User.findById(user._id).select(
-      "-fullName -username -password -isAdmin -createdAt -updatedAt -__v"
-    );
+    const token = user.generateToken();
+
+    if (!token) {
+      return res.status(500).send("Error while generating token.");
+    }
+
+    user.token = token;
+    await user.save({ validateBeforeSave: false });
+
+    const createdUser = await User.findById(user._id).select("email _id token");
 
     if (!createdUser) {
       return res
@@ -32,7 +39,13 @@ const registerUser = async (req, res) => {
         .send("Something went wrong while registering the user.");
     }
 
-    return res.status(201).json({
+    const options = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    };
+
+    return res.status(201).cookie("token", token, options).json({
       message: "User registered successfully.",
       user: createdUser,
     });
@@ -77,7 +90,7 @@ const loginUser = async (req, res) => {
     const options = {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "Strict",
     };
 
     return res.status(200).cookie("token", token, options).json({
@@ -94,6 +107,10 @@ const logoutUser = async (req, res) => {
   try {
     const { _id } = req.user;
 
+    if (!_id) {
+      return res.status(404).send("Not Found.");
+    }
+
     await User.findByIdAndUpdate(
       _id,
       {
@@ -105,7 +122,7 @@ const logoutUser = async (req, res) => {
     const options = {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "Strict",
     };
 
     return res
