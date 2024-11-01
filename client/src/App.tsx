@@ -1,9 +1,11 @@
-const App = () => {
-  return (
-    <div>
-      <h1>Welcome to E-Bazaar</h1>
-    </div>
-  );
-};
+import { createBrowserRouter } from "react-router-dom";
+import Home from "./pages/Home";
 
-export default App;
+const appRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+]);
+
+export default appRouter;
