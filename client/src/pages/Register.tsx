@@ -1,132 +1,132 @@
-import axios from "axios";
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+
+import { Form } from "@/components/ui/form";
+
+import axios from "axios";
+import React, { useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const registerSchema = z.object({
+  fullName: z.string().min(2, "Full name is required"),
+  email: z.string().email("Invalid email address"),
+  username: z.string().min(2, "Username is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type RegisterData = z.infer<typeof registerSchema>;
 
 const Register: React.FC = () => {
-  const [fullName, setFullName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterData>({ resolver: zodResolver(registerSchema) });
+
+  const onSubmit = async (data: RegisterData) => {
     setLoading(true);
-
     try {
       await axios.post(
         `${BASE_URL}/auth/register`,
-        {
-          fullName,
-          email,
-          username,
-          password,
-        },
+        { ...data },
         { withCredentials: true }
       );
     } catch (error: any) {
-      console.log(error.message);
+      console.error(error.response.data);
     } finally {
       setLoading(false);
-      setFullName("");
     }
   };
 
   return (
-    <div>
-      <form className="w-full max-w-md m-10" onSubmit={handleRegister}>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <Form
+        className="w-full max-w-sm p-6 bg-white shadow-md rounded-md"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <h2 className="text-center text-2xl font-semibold mb-4">Register</h2>
+
         <div className="mb-4">
-          <Label className="block text-sm font-bold mb-2" htmlFor="fullName">
-            Full Name
-          </Label>
-          <Input
-            type="text"
-            id="fullName"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Enter your full name"
-            className="w-full px-4 py-2 border rounded-md text-[#09090b]"
-            required
-          />
+          <Label htmlFor="fullName">Full Name</Label>
+          <Input id="fullName" {...register("fullName")} />
+          {errors.fullName && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.fullName.message}
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
-          <Label className="block text-sm font-bold mb-2" htmlFor="email">
-            Email
-          </Label>
-          <Input
-            type="text"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your full name"
-            className="w-full px-4 py-2 border rounded-md text-[#09090b]"
-            required
-          />
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" {...register("email")} />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+          )}
         </div>
 
         <div className="mb-4">
-          <Label className="block text-sm font-bold mb-2" htmlFor="username">
-            Username
-          </Label>
-          <Input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter your full name"
-            className="w-full px-4 py-2 border rounded-md text-[#09090b]"
-            required
-          />
+          <Label htmlFor="username">Username</Label>
+          <Input id="username" {...register("username")} />
+          {errors.username && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.username.message}
+            </p>
+          )}
         </div>
 
-        <div className="mb-4">
-          <Label className="block text-sm font-bold mb-2" htmlFor="password">
-            Password
-          </Label>
+        <div className="mb-4 relative">
+          <Label htmlFor="password">Password</Label>
           <Input
-            type={isPasswordVisible ? "text" : "password"}
             id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your full name"
-            className="w-full px-4 py-2 border rounded-md text-[#09090b]"
-            required
+            type={isPasswordVisible ? "text" : "password"}
+            {...register("password")}
           />
           <Button
             type="button"
             onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-            className="absolute right-3 top-9"
+            className="absolute right-3 top-2"
           >
-            {isPasswordVisible ? (
-              <AiFillEyeInvisible size={20} />
-            ) : (
-              <AiFillEye size={20} />
-            )}
+            {isPasswordVisible ? <AiFillEyeInvisible /> : <AiFillEye />}
           </Button>
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
         <Button
           type="submit"
-          className="w-full text-[#09090b] mb-4"
-          variant="outline"
+          className="w-full mt-4 bg-blue-500 text-white hover:bg-blue-600 transition-all"
           disabled={loading}
         >
           {loading ? (
-            <div className="flex justify-center items-center">
-              <ThreeDots color="#09090b" height={24} width={24} />
+            <div className="flex justify-center">
+              <ThreeDots color="#ffffff" height={24} width={24} />
             </div>
           ) : (
             "Register"
           )}
         </Button>
-      </form>
+
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Already registered?{" "}
+          <Link to="/auth/login" className="text-blue-500 hover:underline">
+            Login here
+          </Link>
+        </p>
+      </Form>
     </div>
   );
 };

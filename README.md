@@ -25,3 +25,10 @@ Sort in brands; like [Levi, Puma, Wrogn, etc]
 Name, email, username, password, isAdmin: by default false, cart, orders, token
 
 ### Product Models
+
+### Todo
+
+1. Application in inspect see cookies and their size, httpOnly, secure, sameSite, etc
+2. see validator code in backend (and understand backend more with options and cors one)
+3. go through mongoose guides, api and more.
+4. read more about react-router-dom
