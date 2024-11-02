@@ -8,25 +8,38 @@ import { ThreeDots } from "react-loader-spinner";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
+interface RegisterData {
+  fullName: string;
+  email: string;
+  username: string;
+  password: string;
+}
+
 const Register: React.FC = () => {
-  const [fullName, setFullName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [formData, setFormData] = useState<RegisterData>({
+    fullName: "",
+    email: "",
+    username: "",
+    password: "",
+  });
+
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<string>("");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await axios.post(
-        `${BASE_URL}/auth/register`,
-        { fullName, email, username, password },
-        { withCredentials: true }
-      );
+      await axios.post(`${BASE_URL}/auth/register`, formData, {
+        withCredentials: true,
+      });
     } catch (error: any) {
       const errorMessage = error.response.data;
       setErrors(errorMessage.replace("Internal Server Error: ", ""));
@@ -50,8 +63,8 @@ const Register: React.FC = () => {
             <Input
               type="text"
               id="fullName"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              value={formData.fullName}
+              onChange={handleInputChange}
               placeholder="First and last name"
               required
               className="w-full px-3 py-1.5 border rounded-md"
@@ -65,8 +78,8 @@ const Register: React.FC = () => {
             <Input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleInputChange}
               placeholder="john@doe.com"
               required
               className="w-full px-3 py-1.5 border rounded-md"
@@ -81,8 +94,8 @@ const Register: React.FC = () => {
             <Input
               type="text"
               id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={formData.username}
+              onChange={handleInputChange}
               placeholder="john1812"
               required
               className="w-full px-3 py-1.5 border rounded-md"
@@ -96,8 +109,8 @@ const Register: React.FC = () => {
             <Input
               type={isPasswordVisible ? "text" : "password"}
               id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleInputChange}
               placeholder="At least 8 characters"
               required
               className="w-full px-3 py-1.5 border rounded-md"
