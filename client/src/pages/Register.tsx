@@ -52,9 +52,7 @@ const Register: React.FC = () => {
   return (
     <div className="flex justify-center pt-6">
       <div className="w-full max-w-xs bg-white p-4 rounded-md shadow-md">
-        <h1 className="text-lg font-semibold text-center mb-3">
-          Create Account
-        </h1>
+        <h1 className="text-2xl font-semibold mb-3">Create Account</h1>
 
         <form onSubmit={handleRegister}>
           <div className="mb-3">
@@ -134,9 +132,12 @@ const Register: React.FC = () => {
           </Button>
         </form>
 
-        <p className="text-xs text-center mt-3">
+        <p className="text-xs text-center mt-5">
           Already registered?{" "}
-          <a href="/auth/login" className="text-orange-700 hover:underline">
+          <a
+            href="/auth/login"
+            className="text-blue-600 hover:underline hover:text-orange-600"
+          >
             Login here
           </a>
         </p>

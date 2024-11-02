@@ -50,9 +50,7 @@ const Login: React.FC = () => {
   return (
     <div className="flex justify-center pt-6">
       <div className="w-full max-w-xs bg-white p-4 rounded-md shadow-md">
-        <h1 className="text-lg font-semibold text-center mb-3">
-          Create Account
-        </h1>
+        <h1 className="text-2xl font-semibold mb-3">Sign in</h1>
 
         <form onSubmit={handleLogin}>
           <div className="mb-3">
@@ -117,9 +115,12 @@ const Login: React.FC = () => {
           </Button>
         </form>
 
-        <p className="text-xs text-center mt-3">
+        <p className="text-xs text-center mt-5">
           New User?{" "}
-          <a href="/auth/register" className="text-orange-700 hover:underline">
+          <a
+            href="/auth/register"
+            className="text-blue-600 hover:underline hover:text-orange-600"
+          >
             Register here
           </a>
         </p>
