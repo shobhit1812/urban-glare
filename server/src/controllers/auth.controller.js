@@ -1,15 +1,14 @@
 import User from "../models/user.model.js";
+// import sendWelcomeEmail from "../utils/sendWelcomeEmail.js";
 import { validateLoginUser, validateRegisterUser } from "../utils/validator.js";
 
 const registerUser = async (req, res) => {
   try {
     validateRegisterUser(req);
 
-    const { fullName, email, username, password } = req.body;
+    const { fullName, email, password } = req.body;
 
-    const existedUser = await User.findOne({
-      $or: [{ email }, { username }],
-    });
+    const existedUser = await User.findOne({ email });
 
     if (existedUser) {
       return res.status(409).send("User already exists.");
@@ -18,7 +17,6 @@ const registerUser = async (req, res) => {
     const user = await User.create({
       fullName,
       email,
-      username,
       password,
     });
 
@@ -39,6 +37,8 @@ const registerUser = async (req, res) => {
         .send("Something went wrong while registering the user.");
     }
 
+    // await sendWelcomeEmail(email);
+
     const options = {
       httpOnly: true,
       secure: true,
@@ -58,14 +58,12 @@ const loginUser = async (req, res) => {
   try {
     validateLoginUser(req);
 
-    const { email, username, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({
-      $or: [{ email }, { username }],
-    });
+    const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).send("Email or username does not exist.");
+      return res.status(404).send("Email does not exist.");
     }
 
     const isPasswordValid = await user.isPasswordCorrect(password);
@@ -84,7 +82,7 @@ const loginUser = async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     const loggedInUser = await User.findById(user._id).select(
-      "-fullName -username -password -isAdmin -token -createdAt -updatedAt -__v"
+      "-fullName -password -isAdmin -token -createdAt -updatedAt -__v"
     );
 
     const options = {

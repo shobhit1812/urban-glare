@@ -1,13 +1,9 @@
 import validator from "validator";
 
-const MIN_USERNAME_LENGTH = 4;
-const MAX_USERNAME_LENGTH = 24;
 const MIN_PASSWORD_LENGTH = 8;
 
-const alphanumericWithNumber = /^[a-zA-Z0-9]*\d+[a-zA-Z0-9]*$/;
-
 const validateRegisterUser = (req) => {
-  const { fullName, email, username, password } = req.body;
+  const { fullName, email, password } = req.body;
 
   if (!fullName?.trim()) {
     throw new Error("Full name is required and cannot be empty.");
@@ -15,17 +11,6 @@ const validateRegisterUser = (req) => {
 
   if (!email?.trim() || !validator.isEmail(email)) {
     throw new Error("Please provide a valid email address.");
-  }
-
-  if (
-    !username?.trim() ||
-    !alphanumericWithNumber.test(username) ||
-    username.length < MIN_USERNAME_LENGTH ||
-    username.length > MAX_USERNAME_LENGTH
-  ) {
-    throw new Error(
-      `Username must be alphanumeric, contain at least one number, and be between ${MIN_USERNAME_LENGTH} to ${MAX_USERNAME_LENGTH} characters.`
-    );
   }
 
   if (
@@ -45,10 +30,10 @@ const validateRegisterUser = (req) => {
 };
 
 const validateLoginUser = (req) => {
-  const { email, username } = req.body;
+  const { email } = req.body;
 
-  if (!email?.trim() & !username?.trim()) {
-    throw new Error("Please provide a valid email address and username.");
+  if (!email?.trim()) {
+    throw new Error("Please provide a valid email address.");
   }
 };
 

@@ -38,24 +38,6 @@ const userSchema = new mongoose.Schema(
         },
       ],
     },
-    username: {
-      type: String,
-      required: true,
-      index: true,
-      unique: true,
-      trim: true,
-      lowercase: true,
-      validate: [
-        {
-          validator: (v) => v.length >= 4,
-          message: "Username should not be less than 4 characters",
-        },
-        {
-          validator: (v) => v.length <= 24,
-          message: "Username should not be more than 24 characters",
-        },
-      ],
-    },
     password: {
       type: String,
       required: true,

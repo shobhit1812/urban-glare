@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
 import { BASE_URL } from "@/helpers/constants/server_url";
@@ -22,6 +23,7 @@ const Login: React.FC = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -36,6 +38,7 @@ const Login: React.FC = () => {
       await axios.post(`${BASE_URL}/auth/login`, formData, {
         withCredentials: true,
       });
+      navigate("/");
     } catch (error: any) {
       const errorMessage = error.response.data;
       setErrors(errorMessage.replace("Internal Server Error: ", ""));
