@@ -1,0 +1,89 @@
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { IoSearchSharp } from "react-icons/io5";
+import { CiShoppingCart } from "react-icons/ci";
+import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+
+interface ComponentLink {
+  title: string;
+  href: string;
+}
+
+const components: ComponentLink[] = [
+  { title: "Sign in", href: "/auth/login" },
+  { title: "Admin Dashboard", href: "/admin" },
+  { title: "Orders", href: "/orders" },
+  { title: "Wishlist", href: "/wishlist" },
+  { title: "Customer Service", href: "/customer-service" },
+  { title: "Settings", href: "/setting" },
+];
+
+const Navbar: React.FC = () => {
+  return (
+    <nav className="px-6 py-3 md:py-4">
+      <div className="flex flex-col md:flex-row items-center justify-between max-w-screen-2xl mx-auto">
+        <div className="font-bold text-xl pt-3 md:text-2xl mr-4 md:mr-8 md:self-start">
+          E-Bazaar
+        </div>
+
+        <div className="flex items-center w-full md:w-1/2 lg:w-2/3 bg-white rounded-md overflow-hidden mt-3 md:mt-0">
+          <Input
+            className="flex-grow px-4 py-2 outline-none"
+            placeholder="Search E-Bazaar"
+          />
+          <button className="p-2">
+            <IoSearchSharp size={24} />
+          </button>
+        </div>
+
+        <div className="flex flex-col items-center mx-4 md:mx-6">
+          <p className="text-xs hidden md:block mr-4 md:mr-6">Hello, Shobhit</p>
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="font-medium text-sm md:text-base hover:underline">
+                  Account & Lists
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="p-4 rounded-md shadow-md">
+                  <ul className="w-36 gap-2 flex flex-col">
+                    {components.map((component) => (
+                      <li key={component.title}>
+                        <a
+                          href={component.href}
+                          className="text-gray-800 hover:underline"
+                        >
+                          {component.title}
+                        </a>
+                      </li>
+                    ))}
+                    <li className="mt-2">
+                      <Button variant="destructive" className="w-full">
+                        Logout
+                      </Button>
+                    </li>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+
+        <div className="flex items-center relative mt-3 md:mt-0 cursor-pointer">
+          <CiShoppingCart size={30} className="mr-1 relative" />
+          <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-600 text-xs text-white rounded-full px-2 py-0.5">
+            0
+          </span>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
