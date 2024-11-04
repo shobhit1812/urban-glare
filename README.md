@@ -17,7 +17,7 @@ Sort in brands; like [Levi, Puma, Wrogn, etc]
 
 ### Authentication Routing
 
-1. `'/auth/login'` Use Formik
+1. `'/auth/login'`
 2. `'/auth/register'` After successfully registering send a welcome email
 
 ### User Models
@@ -32,3 +32,5 @@ Name, email, username, password, isAdmin: by default false, cart, orders, token
 2. see validator code in backend (and understand backend more with options and cors one)
 3. go through mongoose guides, api and more.
 4. read more about react-router-dom
+5. revise devTinder full
+6. req.params.blogId vs req.user.id (memoir - basically how id is extracting)
