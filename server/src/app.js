@@ -20,6 +20,6 @@ import authRoutes from "./routes/auth.routes.js";
 import usersRoutes from "./routes/user.routes.js";
 
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/users", usersRoutes);
+app.use("/api/v1/user", usersRoutes);
 
 export default app;

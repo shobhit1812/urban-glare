@@ -35,4 +35,8 @@ const validateLoginUser = (req) => {
   }
 };
 
-export { validateRegisterUser, validateLoginUser };
+const validateProduct = (req) => {
+  const { name, description, price } = req.body;
+};
+
+export { validateRegisterUser, validateLoginUser, validateProduct };
