@@ -1,7 +1,5 @@
 import validator from "validator";
 
-const MIN_PASSWORD_LENGTH = 8;
-
 const validateRegisterUser = (req) => {
   const { fullName, email, password } = req.body;
 
@@ -16,7 +14,7 @@ const validateRegisterUser = (req) => {
   if (
     !password?.trim() ||
     !validator.isStrongPassword(password, {
-      minLength: MIN_PASSWORD_LENGTH,
+      minLength: 8,
       minLowercase: 1,
       minUppercase: 1,
       minNumbers: 1,

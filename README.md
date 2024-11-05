@@ -26,11 +26,26 @@ Name, email, username, password, isAdmin: by default false, cart, orders, token
 
 ### Product Models
 
-### Todo
+### Difference between Link, useNavigation, and redirect.
 
-1. Application in inspect see cookies and their size, httpOnly, secure, sameSite, etc
-2. see validator code in backend (and understand backend more with options and cors one)
-3. go through mongoose guides, api and more.
-4. read more about react-router-dom
-5. revise devTinder full
-6. req.params.blogId vs req.user.id (memoir - basically how id is extracting)
+1. Link is a component used to navigate between routes within your React application without reloading the page.
+
+2) useNavigation is a hook that provides information about the current navigation state in react-router-dom. It’s especially helpful when using loaders or waiting for data to be fetched before rendering a component. `useNavigation returns an object with properties like state (loading, idle, or submitting) that lets you know the current status of the navigation.`.
+   `navigate allows us to move to a new route after an asynchronous operation, like handling a form submission, without reloading the page.`
+
+```
+import { useNavigation } from "react-router-dom";
+
+const Blog = () => {
+const navigation = useNavigation();
+
+if (navigation.state === "loading") {
+return <p>Loading...</p>; // Display loading state
+}
+
+return <div>Your blog content here</div>;
+};
+
+```
+
+3. Redirect is a function used to programmatically navigate to another route, typically in loader or action functions on the server side.
