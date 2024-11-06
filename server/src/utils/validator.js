@@ -36,17 +36,34 @@ const validateLoginUser = (req) => {
 };
 
 const validateProduct = (req) => {
-  // name, description, price, brand, category, size, pictures
-  const { name, price } = req.body;
+  const { name, price, brand, gender, sizes } = req.body;
 
   // BUG: just check difference between !name and !name.trim() are working same or not
   if (!name || !name.trim()) {
-    throw new Error("Name is required and cannot be empty.");
+    throw new Error("Product name is required and cannot be empty.");
   }
 
   if (price === undefined || price === null || isNaN(price) || price <= 0) {
     throw new Error(
       "Price is required and must be a valid number greater than or equal to zero."
+    );
+  }
+
+  if (!brand || !brand.trim()) {
+    throw new Error("Brand name is required and cannot be empty.");
+  }
+
+  const validGenders = ["male", "female", "kids"];
+  if (!validGenders.includes(gender)) {
+    throw new Error(
+      `Gender must be one of the following: ${validGenders.join(", ")}.`
+    );
+  }
+
+  const validSizes = ["XS", "S", "M", "L", "XL"];
+  if (!Array.isArray(sizes) || sizes.some((s) => !validSizes.includes(s))) {
+    throw new Error(
+      `Size must be an array of valid sizes: ${validSizes.join(", ")}.`
     );
   }
 };

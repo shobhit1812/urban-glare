@@ -5,6 +5,7 @@ const productSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      index: true,
       trim: true,
       minLength: 0,
     },
@@ -34,7 +35,7 @@ const productSchema = new mongoose.Schema(
         message: "{VALUE} is not a valid category type",
       },
     },
-    size: [
+    sizes: [
       {
         type: String,
         required: true,
@@ -44,7 +45,7 @@ const productSchema = new mongoose.Schema(
         },
       },
     ],
-    pictures: [
+    productImages: [
       {
         type: String,
         required: true,
@@ -57,7 +58,6 @@ const productSchema = new mongoose.Schema(
       },
     ],
   },
-
   { timestamps: true }
 );
 
