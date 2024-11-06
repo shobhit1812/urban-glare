@@ -1,4 +1,3 @@
-import fs from "fs";
 import Product from "../models/product.model.js";
 import { validateProduct } from "../utils/validator.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
@@ -25,12 +24,9 @@ const createProduct = async (req, res) => {
     const imageUrls = await Promise.all(
       req.files.productImages.map(async (file) => {
         const imageUrl = await uploadOnCloudinary(file.path, "productImages");
-        fs.unlinkSync(file.path);
         return imageUrl;
       })
     );
-
-    console.log(imageUrls);
 
     const product = await Product.create({
       name,
