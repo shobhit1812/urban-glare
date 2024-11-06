@@ -1,6 +1,6 @@
 import Product from "../models/product.model.js";
 import { validateProduct } from "../utils/validator.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import uploadOnCloudinary from "../utils/cloudinary.js";
 
 const createProduct = async (req, res) => {
   try {
@@ -22,24 +22,15 @@ const createProduct = async (req, res) => {
       return res.status(400).send("At least one product image is required.");
     }
 
-    // Array to store URLs of uploaded images
-    const pictureUrls = [];
+    const imageUrls = await Promise.all(
+      req.files.productImages.map(async (file) => {
+        const imageUrl = await uploadOnCloudinary(file.path, "productImages");
+        fs.unlinkSync(file.path);
+        return imageUrl;
+      })
+    );
 
-    // Upload each file to Cloudinary
-    for (const file of req.files.productImages) {
-      const picturePath = file.path;
-      const folder_name = "e-bazaar";
-      const uploadResult = await uploadOnCloudinary(picturePath, folder_name);
-
-      if (uploadResult) {
-        pictureUrls.push(uploadResult.secure_url);
-      }
-
-      // Delete the local file after uploading to Cloudinary
-      fs.unlinkSync(picturePath);
-    }
-
-    if (pictureUrls.length === 0) {
+    if (imageUrls.length === 0) {
       return res.status(500).send("Failed to upload product images.");
     }
 
@@ -50,7 +41,7 @@ const createProduct = async (req, res) => {
       brand,
       gender,
       sizes,
-      productImages: pictureUrls, // Save array of URLs to database
+      productImages: imageUrls,
     });
 
     const createdProduct = await Product.findById(product._id);
