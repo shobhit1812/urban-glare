@@ -49,3 +49,9 @@ return <div>Your blog content here</div>;
 ```
 
 3. Redirect is a function used to programmatically navigate to another route, typically in loader or action functions on the server side.
+
+### Todo
+
+1. category based on (puma, adidas, nike) - schema implement
+2. cloudinary,
+3. read redux more (connect)

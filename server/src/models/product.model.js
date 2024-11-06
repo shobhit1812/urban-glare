@@ -17,6 +17,14 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    category: {
+      type: String,
+      required: true,
+      enum: {
+        value: ["male", "female", "girl", "boy"],
+        message: "{VALUE} is incorrect category type",
+      },
+    },
     pictures: [
       {
         type: String,
