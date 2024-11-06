@@ -36,7 +36,19 @@ const validateLoginUser = (req) => {
 };
 
 const validateProduct = (req) => {
-  const { name, description, price } = req.body;
+  // name, description, price, brand, category, size, pictures
+  const { name, price } = req.body;
+
+  // BUG: just check difference between !name and !name.trim() are working same or not
+  if (!name || !name.trim()) {
+    throw new Error("Name is required and cannot be empty.");
+  }
+
+  if (price === undefined || price === null || isNaN(price) || price <= 0) {
+    throw new Error(
+      "Price is required and must be a valid number greater than or equal to zero."
+    );
+  }
 };
 
 export { validateRegisterUser, validateLoginUser, validateProduct };

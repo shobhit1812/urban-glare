@@ -49,6 +49,15 @@ const userSchema = new mongoose.Schema(
     token: {
       type: String,
     },
+    // FIXME
+    // cart: {
+    //   type: String,
+    // reference of product only
+    // },
+    // favorites: {
+    //   type: String,
+    // reference of product only
+    // },
   },
   { timestamps: true }
 );
