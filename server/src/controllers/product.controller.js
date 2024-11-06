@@ -1,3 +1,4 @@
+import fs from "fs";
 import Product from "../models/product.model.js";
 import { validateProduct } from "../utils/validator.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
@@ -9,7 +10,6 @@ const createProduct = async (req, res) => {
     const { name, description, price, brand, gender, sizes } = req.body;
 
     const existedProduct = await Product.findOne({ name });
-
     if (existedProduct) {
       return res.status(409).send("Product already exists.");
     }
@@ -17,9 +17,9 @@ const createProduct = async (req, res) => {
     if (
       !req.files ||
       !req.files.productImages ||
-      !req.files.productImages.length === 0
+      req.files.productImages.length === 0
     ) {
-      return res.status(400).send("At least one product image is required.");
+      return res.status(400).send("Product images are required.");
     }
 
     const imageUrls = await Promise.all(
@@ -30,9 +30,7 @@ const createProduct = async (req, res) => {
       })
     );
 
-    if (imageUrls.length === 0) {
-      return res.status(500).send("Failed to upload product images.");
-    }
+    console.log(imageUrls);
 
     const product = await Product.create({
       name,
@@ -44,11 +42,9 @@ const createProduct = async (req, res) => {
       productImages: imageUrls,
     });
 
-    const createdProduct = await Product.findById(product._id);
-
     return res.status(201).json({
       message: "Product created successfully.",
-      product: createdProduct,
+      product,
     });
   } catch (error) {
     res.status(500).send("Internal Server Error: " + error.message);

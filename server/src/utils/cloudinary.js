@@ -16,11 +16,15 @@ const uploadOnCloudinary = async (localFilePath, folder_name) => {
       folder: `e-bazaar/${folder_name}`,
     });
 
-    fs.unlinkSync(localFilePath);
+    if (fs.existsSync(localFilePath)) {
+      fs.unlinkSync(localFilePath);
+    }
 
     return response.secure_url;
   } catch (error) {
-    fs.unlinkSync(localFilePath);
+    if (fs.existsSync(localFilePath)) {
+      fs.unlinkSync(localFilePath);
+    }
     throw new Error("Cloudinary upload failed: " + error.message);
   }
 };
