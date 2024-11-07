@@ -30,7 +30,7 @@ const registerUser = async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     const createdUser = await User.findById(user._id).select(
-      "fullName email token"
+      "fullName email isAdmin token"
     );
 
     if (!createdUser) {
@@ -84,7 +84,7 @@ const loginUser = async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     const loggedInUser = await User.findById(user._id).select(
-      "fullName email token"
+      "fullName email isAdmin token"
     );
 
     const options = {

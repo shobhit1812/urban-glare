@@ -24,13 +24,17 @@ interface ComponentLink {
   href: string;
 }
 
-const components: ComponentLink[] = [
+const userComponents: UserComponentLink[] = [
   { title: "Sign in", href: "/auth/login" },
-  { title: "Admin Dashboard", href: "/admin" },
   { title: "Orders", href: "/orders" },
   { title: "Wishlist", href: "/wishlist" },
   { title: "Customer Service", href: "/customer-service" },
   { title: "Settings", href: "/setting" },
+];
+
+const adminComponents: AdminComponentLink[] = [
+  { title: "Dashboard", href: "/dashboard" },
+  { title: "Create Product", href: "/create-product" },
 ];
 
 const Navbar: React.FC = () => {
@@ -87,16 +91,28 @@ const Navbar: React.FC = () => {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="p-4 rounded-md shadow-md">
                   <ul className="w-36 gap-2 flex flex-col">
-                    {components.map((component) => (
-                      <li key={component.title}>
-                        <a
-                          href={component.href}
-                          className="text-gray-800 hover:underline"
-                        >
-                          {component.title}
-                        </a>
-                      </li>
-                    ))}
+                    {!user?.isAdmin
+                      ? userComponents.map((component) => (
+                          <li key={component.title}>
+                            <a
+                              href={component.href}
+                              className="text-gray-800 hover:underline"
+                            >
+                              {component.title}
+                            </a>
+                          </li>
+                        ))
+                      : adminComponents.map((component) => (
+                          <li key={component.title}>
+                            <a
+                              href={component.href}
+                              className="text-gray-800 hover:underline"
+                            >
+                              {component.title}
+                            </a>
+                          </li>
+                        ))}
+
                     <li className="mt-2">
                       <Button
                         variant="destructive"
