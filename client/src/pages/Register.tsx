@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
+import { addUser } from "@/redux/slices/user.slice";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
@@ -26,6 +28,7 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<string>("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -37,9 +40,11 @@ const Register: React.FC = () => {
     setLoading(true);
 
     try {
-      await axios.post(`${BASE_URL}/auth/register`, formData, {
+      const response = await axios.post(`${BASE_URL}/auth/register`, formData, {
         withCredentials: true,
       });
+      const { user } = response.data;
+      dispatch(addUser(user));
       navigate("/");
     } catch (error: any) {
       const errorMessage = error.response.data;

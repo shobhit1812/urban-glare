@@ -8,7 +8,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      // NOTE: minLength and maxLength are replaced by validate
       validate: [
         {
           validator: (v) => v.length >= 4,

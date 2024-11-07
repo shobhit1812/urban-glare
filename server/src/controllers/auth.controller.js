@@ -29,7 +29,9 @@ const registerUser = async (req, res) => {
     user.token = token;
     await user.save({ validateBeforeSave: false });
 
-    const createdUser = await User.findById(user._id).select("email _id token");
+    const createdUser = await User.findById(user._id).select(
+      "fullName email token"
+    );
 
     if (!createdUser) {
       return res
@@ -82,7 +84,7 @@ const loginUser = async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     const loggedInUser = await User.findById(user._id).select(
-      "-fullName -password -isAdmin -token -createdAt -updatedAt -__v"
+      "fullName email token"
     );
 
     const options = {
@@ -94,7 +96,6 @@ const loginUser = async (req, res) => {
     return res.status(200).cookie("token", token, options).json({
       message: "User logged in successfully.",
       user: loggedInUser,
-      token: token,
     });
   } catch (error) {
     res.status(500).send("Internal Server Error: " + error.message);
