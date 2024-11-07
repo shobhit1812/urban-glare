@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
-import React, { useEffect, useState } from "react";
 import { addUser } from "@/redux/slices/user.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
@@ -61,8 +61,6 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {}, []);
 
   return (
     <div className="flex justify-center pt-6">

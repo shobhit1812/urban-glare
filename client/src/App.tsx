@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
-import { lazy, Suspense } from "react";
 import Home from "./pages/Home";
 import Error from "./pages/Error";
+import Browse from "./pages/Browse";
+import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 // Lazy load components
@@ -22,7 +23,11 @@ const appRouter = createBrowserRouter([
     errorElement: <Error />,
     children: [
       {
-        path: "dashboard",
+        path: "",
+        element: <Browse />,
+      },
+      {
+        path: "admin-dashboard",
         element: (
           <LazyLoad>
             <Dashboard />

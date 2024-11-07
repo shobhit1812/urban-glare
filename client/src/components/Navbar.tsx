@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { IoSearchSharp } from "react-icons/io5";
 import { CiShoppingCart } from "react-icons/ci";
@@ -44,7 +44,7 @@ const userComponents: UserComponentLink[] = [
 ];
 
 const adminComponents: AdminComponentLink[] = [
-  { title: "Dashboard", href: "/dashboard" },
+  { title: "Dashboard", href: "/admin-dashboard" },
   { title: "Create Product", href: "/create-product" },
 ];
 
