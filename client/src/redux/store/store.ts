@@ -2,6 +2,14 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userSlice from "../slices/user.slice";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage
 import { persistStore, persistReducer } from "redux-persist";
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 
 // Define persist configuration
 const persistConfig = {
@@ -20,6 +28,13 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these redux-persist actions
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

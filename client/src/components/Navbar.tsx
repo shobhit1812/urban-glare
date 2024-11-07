@@ -2,12 +2,12 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
 import { IoSearchSharp } from "react-icons/io5";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store/store";
 import { ThreeDots } from "react-loader-spinner";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "@/redux/slices/user.slice";
 import { BASE_URL } from "@/helpers/constants/server_url";
@@ -77,7 +77,7 @@ const Navbar: React.FC = () => {
     <nav className="px-6 py-3 md:py-4">
       <div className="flex flex-col md:flex-row items-center justify-between max-w-screen-2xl mx-auto">
         <div className="font-bold text-xl pt-3 md:text-2xl mr-4 md:mr-8 md:self-start">
-          E-Bazaar
+          <Link to="/">E-Bazaar</Link>
         </div>
 
         <div className="flex items-center w-full md:w-1/2 lg:w-2/3 bg-white rounded-md overflow-hidden mt-3 md:mt-0">

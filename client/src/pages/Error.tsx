@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { useRouteError, isRouteErrorResponse } from "react-router-dom";
 
 const Error: React.FC = () => {
@@ -19,9 +21,12 @@ const Error: React.FC = () => {
       <h1 className="text-4xl font-bold text-red-600">
         {status} - {statusText}
       </h1>
-      <p className="text-lg mt-4">
+      <p className="text-lg mt-4 mb-4">
         Sorry, something went wrong. Please try again later.
       </p>
+      <Button>
+        <Link to="/">Home</Link>
+      </Button>
     </div>
   );
 };

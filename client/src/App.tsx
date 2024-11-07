@@ -1,22 +1,59 @@
+/* eslint-disable react-refresh/only-export-components */
+import { lazy, Suspense } from "react";
 import Home from "./pages/Home";
 import Error from "./pages/Error";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import { createBrowserRouter } from "react-router-dom";
+
+// Lazy load components
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const CreateProduct = lazy(() => import("./pages/CreateProduct"));
+
+// Reusable component for loading lazy components with fallback
+const LazyLoad = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+);
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
     errorElement: <Error />,
+    children: [
+      {
+        path: "dashboard",
+        element: (
+          <LazyLoad>
+            <Dashboard />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "create-product",
+        element: (
+          <LazyLoad>
+            <CreateProduct />
+          </LazyLoad>
+        ),
+      },
+    ],
   },
   {
     path: "/auth/register",
-    element: <Register />,
+    element: (
+      <LazyLoad>
+        <Register />
+      </LazyLoad>
+    ),
   },
   {
     path: "/auth/login",
-    element: <Login />,
+    element: (
+      <LazyLoad>
+        <Login />
+      </LazyLoad>
+    ),
   },
 ]);
 
