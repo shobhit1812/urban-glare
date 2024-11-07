@@ -1,7 +1,11 @@
 import { Router } from "express";
 import verifyJWT from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
-import { createProduct } from "../controllers/product.controller.js";
+import {
+  createProduct,
+  getAllProducts,
+  getProductById,
+} from "../controllers/product.controller.js";
 
 const router = Router();
 
@@ -15,5 +19,8 @@ router.route("/create-product").post(
   ]),
   createProduct
 );
+
+router.route("/get-all-products").get(verifyJWT, getAllProducts);
+router.route("/get-product/:productId").get(verifyJWT, getProductById);
 
 export default router;

@@ -50,8 +50,21 @@ return <div>Your blog content here</div>;
 
 3. Redirect is a function used to programmatically navigate to another route, typically in loader or action functions on the server side.
 
+### Difference between `!name` and `!name.trim()`?
+
+1. `!name`: This will catch cases where name is null, undefined, an empty string "", or even 0.
+2. `!name.trim()`: This specifically checks if the string is empty or contains only whitespace (e.g., " "). However, if name is null or undefined, calling .trim() directly on it will throw an error.
+
+Using just `!name?.trim()` is enough. This single check covers all cases, ensuring that `name`:
+
+1. Is defined (not `null` or `undefined`)
+2. Contains non-whitespace characters
+
+This simplifies the code while ensuring the input meets your requirements.
+
 ### Todo
 
 1. category based on (puma, adidas, nike) - schema implement
 2. cloudinary,
 3. read redux more (connect)
+4. see the difference between upload on cloudinary in memoir, yt, e-bazaar

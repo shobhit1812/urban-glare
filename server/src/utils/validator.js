@@ -36,10 +36,9 @@ const validateLoginUser = (req) => {
 };
 
 const validateProduct = (req) => {
-  const { name, price, brand, gender, sizes } = req.body;
+  const { name, price, gender, sizes } = req.body;
 
-  // BUG: just check difference between !name and !name.trim() are working same or not
-  if (!name || !name.trim()) {
+  if (!name.trim()) {
     throw new Error("Product name is required and cannot be empty.");
   }
 
@@ -47,10 +46,6 @@ const validateProduct = (req) => {
     throw new Error(
       "Price is required and must be a valid number greater than or equal to zero."
     );
-  }
-
-  if (!brand || !brand.trim()) {
-    throw new Error("Brand name is required and cannot be empty.");
   }
 
   const validGenders = ["male", "female", "kids"];

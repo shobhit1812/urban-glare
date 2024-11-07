@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Product from "../models/product.model.js";
 import { validateProduct } from "../utils/validator.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
@@ -47,4 +48,52 @@ const createProduct = async (req, res) => {
   }
 };
 
-export { createProduct };
+// const updateProduct = async (req, res) => {
+//   try {
+//     const { productId } = req.params;
+//   } catch (error) {
+//     res.status(500).send("Internal Server Error: " + error.message);
+//   }
+// };
+
+const getAllProducts = async (_, res) => {
+  try {
+    const products = await Product.find({});
+
+    if (!products.length) {
+      return res.send(404).send("No products found.");
+    }
+
+    return res.status(200).json({
+      message: "Products fetched successfully.",
+      products: products,
+    });
+  } catch (error) {
+    res.status(500).send("Internal Server Error: " + error.message);
+  }
+};
+
+const getProductById = async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).send("Invalid product ID.");
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).send("No product found.");
+    }
+
+    return res.status(200).json({
+      message: "Product fetched successfully.",
+      product: product,
+    });
+  } catch (error) {
+    res.status(500).send("Internal Server Error: " + error.message);
+  }
+};
+
+export { createProduct, getAllProducts, getProductById };
