@@ -19,9 +19,20 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 
-interface ComponentLink {
+interface UserComponentLink {
   title: string;
   href: string;
+}
+
+interface AdminComponentLink {
+  title: string;
+  href: string;
+}
+
+interface User {
+  fullName: string;
+  isAdmin: boolean;
+  token: string;
 }
 
 const userComponents: UserComponentLink[] = [
@@ -39,7 +50,7 @@ const adminComponents: AdminComponentLink[] = [
 
 const Navbar: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const user: object = useSelector((state: RootState) => state.user);
+  const user: User | null = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -53,10 +64,10 @@ const Navbar: React.FC = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
+      dispatch(removeUser({}));
       navigate("/");
-      dispatch(removeUser());
     } catch (error: any) {
-      console.log(error.message);
+      console.error("Error logging out:", error.message);
     } finally {
       setLoading(false);
     }
@@ -81,7 +92,7 @@ const Navbar: React.FC = () => {
 
         <div className="flex flex-col items-center mx-4 md:mx-6">
           <p className="text-xs hidden md:block mr-4 md:mr-6">
-            Hello, {!user ? "sign in" : user?.fullName}
+            Hello, {user ? user?.fullName : "sign in"}
           </p>
           <NavigationMenu>
             <NavigationMenuList>
@@ -91,18 +102,20 @@ const Navbar: React.FC = () => {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="p-4 rounded-md shadow-md">
                   <ul className="w-36 gap-2 flex flex-col">
-                    {!user?.isAdmin
-                      ? userComponents.map((component) => (
-                          <li key={component.title}>
-                            <a
-                              href={component.href}
-                              className="text-gray-800 hover:underline"
-                            >
-                              {component.title}
-                            </a>
-                          </li>
-                        ))
-                      : adminComponents.map((component) => (
+                    {user
+                      ? (user?.isAdmin ? adminComponents : userComponents).map(
+                          (component) => (
+                            <li key={component.title}>
+                              <a
+                                href={component.href}
+                                className="text-gray-800 hover:underline"
+                              >
+                                {component.title}
+                              </a>
+                            </li>
+                          )
+                        )
+                      : userComponents.map((component) => (
                           <li key={component.title}>
                             <a
                               href={component.href}
@@ -112,23 +125,28 @@ const Navbar: React.FC = () => {
                             </a>
                           </li>
                         ))}
-
-                    <li className="mt-2">
-                      <Button
-                        variant="destructive"
-                        className="w-full"
-                        onClick={handleLogout}
-                        disabled={loading}
-                      >
-                        {loading ? (
-                          <div className="flex justify-center items-center">
-                            <ThreeDots color="#ffffff" height={24} width={24} />
-                          </div>
-                        ) : (
-                          "Logout"
-                        )}
-                      </Button>
-                    </li>
+                    {user && (
+                      <li className="mt-2">
+                        <Button
+                          variant="destructive"
+                          className="w-full"
+                          onClick={handleLogout}
+                          disabled={loading}
+                        >
+                          {loading ? (
+                            <div className="flex justify-center items-center">
+                              <ThreeDots
+                                color="#ffffff"
+                                height={24}
+                                width={24}
+                              />
+                            </div>
+                          ) : (
+                            "Logout"
+                          )}
+                        </Button>
+                      </li>
+                    )}
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
