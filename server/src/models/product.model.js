@@ -27,11 +27,17 @@ const productSchema = new mongoose.Schema(
       trim: true,
       default: "e-bazaar",
     },
+    rating: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 5,
+    },
     gender: {
       type: String,
       required: true,
       enum: {
-        values: ["male", "female", "kids"],
+        values: ["male", "female", "kids", "unisex"],
         message: "{VALUE} is not a valid category type",
       },
     },

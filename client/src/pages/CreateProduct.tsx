@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const genderOptions = ["male", "female", "kids"];
+const genderOptions = ["male", "female", "kids", "unisex"];
 const sizeOptions = ["XS", "S", "M", "L", "XL"];
 
 interface User {
@@ -35,6 +35,7 @@ const CreateProduct: React.FC = () => {
     description: "",
     price: "",
     brand: "",
+    rating: "",
     gender: "",
     sizes: [] as string[],
   });
@@ -70,8 +71,8 @@ const CreateProduct: React.FC = () => {
       setProductData((prevData) => ({
         ...prevData,
         sizes: isSelected
-          ? [...prevData.sizes, size]
-          : prevData.sizes.filter((s) => s !== size),
+          ? [...prevData.sizes, size] // Add selected size
+          : prevData.sizes.filter((s) => s !== size), // Remove unselected size
       }));
     }
   };
@@ -100,6 +101,7 @@ const CreateProduct: React.FC = () => {
     formData.append("price", productData.price);
     formData.append("brand", productData.brand || "e-bazaar");
     formData.append("gender", productData.gender);
+    formData.append("rating", productData.rating);
     productData.sizes.forEach((size) => formData.append("sizes", size));
     productImages.forEach((image) => formData.append("productImages", image));
 
@@ -171,6 +173,21 @@ const CreateProduct: React.FC = () => {
             value={productData.brand}
             onChange={handleInputChange}
             placeholder="Brand Name"
+          />
+        </div>
+
+        {/* Rating */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Rating (*)</label>
+          <Input
+            name="rating"
+            value={productData.rating}
+            onChange={handleInputChange}
+            type="number"
+            min={0}
+            max={5}
+            placeholder="Enter rating"
+            required
           />
         </div>
 

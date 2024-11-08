@@ -36,7 +36,7 @@ const validateLoginUser = (req) => {
 };
 
 const validateProduct = (req) => {
-  const { name, price, gender, sizes } = req.body;
+  const { name, price, rating, gender, sizes } = req.body;
 
   if (!name.trim()) {
     throw new Error("Product name is required and cannot be empty.");
@@ -48,7 +48,17 @@ const validateProduct = (req) => {
     );
   }
 
-  const validGenders = ["male", "female", "kids"];
+  if (
+    rating === undefined ||
+    rating === null ||
+    isNaN(rating) ||
+    rating <= 0 ||
+    rating > 5
+  ) {
+    throw new Error("Rating is required and must be between 0 - 5.");
+  }
+
+  const validGenders = ["male", "female", "kids", "unisex"];
   if (!validGenders.includes(gender)) {
     throw new Error(
       `Gender must be one of the following: ${validGenders.join(", ")}.`

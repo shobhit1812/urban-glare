@@ -7,7 +7,7 @@ const createProduct = async (req, res) => {
   try {
     validateProduct(req);
 
-    const { name, description, price, brand, gender, sizes } = req.body;
+    const { name, description, price, brand, rating, gender, sizes } = req.body;
 
     const existedProduct = await Product.findOne({ name });
     if (existedProduct) {
@@ -34,6 +34,7 @@ const createProduct = async (req, res) => {
       description,
       price,
       brand,
+      rating,
       gender,
       sizes,
       productImages: imageUrls,
