@@ -68,3 +68,4 @@ This simplifies the code while ensuring the input meets your requirements.
 2. cloudinary,
 3. read redux more (connect)
 4. see the difference between upload on cloudinary in memoir, yt, e-bazaar
+5. when i get product (the data should be coming in random order)
