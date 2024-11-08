@@ -2,9 +2,15 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
-import { BASE_URL } from "@/helpers/constants/server_url";
 import { Button } from "@/components/ui/button";
+import { BASE_URL } from "@/helpers/constants/server_url";
+
+interface User {
+  isAdmin: boolean;
+  token: string;
+}
 
 const Dashboard: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState<
@@ -14,7 +20,15 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const token = useSelector((state: RootState) => state.user?.token);
+  const navigate = useNavigate();
+  const user: User = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    // Redirect if user is not admin
+    if (!user.isAdmin) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -31,7 +45,7 @@ const Dashboard: React.FC = () => {
       const response = await axios.get(url, {
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       });
       setData(

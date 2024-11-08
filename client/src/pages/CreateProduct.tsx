@@ -1,12 +1,13 @@
 import axios from "axios";
 // use sonner in delete product
 // import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
+import { AiOutlineClose } from "react-icons/ai";
 import { ThreeDots } from "react-loader-spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,6 +24,11 @@ import {
 const genderOptions = ["male", "female", "kids"];
 const sizeOptions = ["XS", "S", "M", "L", "XL"];
 
+interface User {
+  isAdmin: boolean;
+  token: string;
+}
+
 const CreateProduct: React.FC = () => {
   const [productData, setProductData] = useState({
     name: "",
@@ -38,7 +44,14 @@ const CreateProduct: React.FC = () => {
   const [errors, setErrors] = useState<string>("");
 
   const navigate = useNavigate();
-  const token: string = useSelector((state: RootState) => state.user?.token);
+  const user: User = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    // Redirect if user is not admin
+    if (!user.isAdmin) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -51,20 +64,30 @@ const CreateProduct: React.FC = () => {
     setProductData((prevData) => ({ ...prevData, gender }));
   };
 
-  const handleSizeChange = (size: string, isSelected: boolean) => {
-    setProductData((prevData) => ({
-      ...prevData,
-      sizes: isSelected
-        ? [...prevData.sizes, size]
-        : prevData.sizes.filter((s) => s !== size),
-    }));
+  const handleSizeChange = (size: string, isSelected: boolean | string) => {
+    // Ensure isSelected is boolean
+    if (typeof isSelected === "boolean") {
+      setProductData((prevData) => ({
+        ...prevData,
+        sizes: isSelected
+          ? [...prevData.sizes, size]
+          : prevData.sizes.filter((s) => s !== size),
+      }));
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    setProductImages(files);
+    setProductImages((prevFiles) => [...prevFiles, ...files]);
     const previews = files.map((file) => URL.createObjectURL(file));
-    setPreviewImages(previews);
+    setPreviewImages((prevPreviews) => [...prevPreviews, ...previews]);
+  };
+
+  const removeImage = (index: number) => {
+    setProductImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setPreviewImages((prevPreviews) =>
+      prevPreviews.filter((_, i) => i !== index)
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -83,13 +106,12 @@ const CreateProduct: React.FC = () => {
     try {
       await axios.post(`${BASE_URL}/product/create-product`, formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user?.token}`,
           "Content-Type": "multipart/form-data",
         },
       });
       navigate("/admin-dashboard");
     } catch (error: any) {
-      // console.error("Error creating product", error.message);
       const errorMessage = error.response.data;
       setErrors(errorMessage.replace("Internal Server Error: ", ""));
     } finally {
@@ -202,17 +224,25 @@ const CreateProduct: React.FC = () => {
           />
           <div className="flex flex-wrap gap-3 mt-3">
             {previewImages.map((src, index) => (
-              <img
-                key={index}
-                src={src}
-                alt="preview"
-                className="w-24 h-24 object-cover rounded-md border"
-              />
+              <div key={index} className="relative">
+                <img
+                  src={src}
+                  alt="preview"
+                  className="w-24 h-24 object-cover rounded-md border"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="absolute top-0 right-0 bg-white rounded-full p-1 shadow"
+                >
+                  <AiOutlineClose size={16} />
+                </button>
+              </div>
             ))}
           </div>
         </div>
 
-        {errors && <p className="text-red-500 text-xs mt-1">{errors}</p>}
+        {errors && <p className="text-red-500 text-lg mt-1">{errors}</p>}
 
         {/* Submit Button */}
         <div>
