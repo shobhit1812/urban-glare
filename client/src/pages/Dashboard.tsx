@@ -1,35 +1,46 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { RootState } from "@/redux/store/store";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { Button } from "@/components/ui/button";
 
 const Dashboard: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState<
     "products" | "orders" | "clients"
   >("products");
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const token = useSelector((state: RootState) => state.user?.token);
 
-  // Fetch data based on selected section
   const fetchData = async () => {
     setLoading(true);
     setError(null);
 
+    let url = `${BASE_URL}`;
+    if (selectedSection === "products") {
+      url += "/product/get-all-products";
+    } else if (selectedSection === "clients") {
+      url += "/user/get-all-users";
+    }
+
     try {
-      const response = await axios.get(`${BASE_URL}/product/get-all-products`, {
+      const response = await axios.get(url, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response);
-
-      setData(response.data.products);
-    } catch (err: any) {
+      setData(
+        selectedSection === "products"
+          ? response.data.products
+          : response.data.users
+      );
+    } catch (error: any) {
+      console.log(error.message);
       setError(`Failed to load ${selectedSection} data`);
     } finally {
       setLoading(false);
@@ -43,7 +54,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="flex flex-col md:flex-row max-w-screen-2xl mx-auto min-h-screen">
       {/* Sidebar */}
-      <div className="w-full md:w-1/4 bg-gray-200 p-4">
+      <div className="w-full md:w-1/4 p-4">
         <h2 className="text-lg font-semibold mb-4">Dashboard</h2>
         <ul className="space-y-3">
           <li>
@@ -95,50 +106,63 @@ const Dashboard: React.FC = () => {
           <p>Loading {selectedSection}...</p>
         ) : error ? (
           <p className="text-red-500">{error}</p>
-        ) : data ? (
-          <div>
-            {/* Render data based on selected section */}
+        ) : data.length > 0 ? (
+          <div className="overflow-x-auto">
             {selectedSection === "products" && (
-              <div>
-                <h3 className="text-xl font-semibold">Product List</h3>
-                <ul className="mt-3 space-y-2">
-                  {data.map((product: any) => (
-                    <li
-                      key={product._id}
-                      className="p-3 border rounded shadow-sm"
-                    >
-                      {product.name} - ${product.price}
-                    </li>
+              <table className="min-w-full bg-white border border-gray-300 text-left">
+                <thead>
+                  <tr className="bg-gray-100 border-b">
+                    <th className="p-4">Image</th>
+                    <th className="p-4">Product ID</th>
+                    <th className="p-4">Name</th>
+                    <th className="p-4">Price</th>
+                    <th className="p-4">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((product) => (
+                    <tr key={product._id} className="border-b hover:bg-gray-50">
+                      <td className="p-4">
+                        <img
+                          src={product.productImages[0]}
+                          alt={product.name}
+                          className="w-16 h-16 object-cover"
+                        />
+                      </td>
+                      <td className="p-4">{product._id}</td>
+                      <td className="p-4">{product.name}</td>
+                      <td className="p-4">${product.price}</td>
+                      <td className="p-4 space-x-2">
+                        <Button className="bg-blue-700 hover:bg-blue-600">
+                          Edit
+                        </Button>
+                        <Button variant="destructive">Delete</Button>
+                      </td>
+                    </tr>
                   ))}
-                </ul>
-              </div>
+                </tbody>
+              </table>
             )}
-            {selectedSection === "orders" && (
-              <div>
-                <h3 className="text-xl font-semibold">Order List</h3>
-                <ul className="mt-3 space-y-2">
-                  {data.map((order: any) => (
-                    <li key={order.id} className="p-3 border rounded shadow-sm">
-                      Order #{order.id} - {order.status}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+
             {selectedSection === "clients" && (
-              <div>
-                <h3 className="text-xl font-semibold">Client List</h3>
-                <ul className="mt-3 space-y-2">
-                  {data.map((client: any) => (
-                    <li
-                      key={client.id}
-                      className="p-3 border rounded shadow-sm"
-                    >
-                      {client.name} - {client.email}
-                    </li>
+              <table className="min-w-full bg-white border border-gray-300 text-left">
+                <thead>
+                  <tr className="bg-gray-100 border-b">
+                    <th className="p-4">Client ID</th>
+                    <th className="p-4">Name</th>
+                    <th className="p-4">Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((client) => (
+                    <tr key={client.id} className="border-b hover:bg-gray-50">
+                      <td className="p-4">{client._id}</td>
+                      <td className="p-4">{client.fullName}</td>
+                      <td className="p-4">{client.email}</td>
+                    </tr>
                   ))}
-                </ul>
-              </div>
+                </tbody>
+              </table>
             )}
           </div>
         ) : (
