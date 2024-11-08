@@ -1,5 +1,238 @@
+import axios from "axios";
+import { toast } from "sonner";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
+import { RootState } from "@/redux/store/store";
+import { Button } from "@/components/ui/button";
+import { ThreeDots } from "react-loader-spinner";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { BASE_URL } from "@/helpers/constants/server_url";
+import {
+  Select,
+  SelectGroup,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+
+const genderOptions = ["male", "female", "kids"];
+const sizeOptions = ["XS", "S", "M", "L", "XL"];
+
 const CreateProduct: React.FC = () => {
-  return <div>CreateProduct</div>;
+  const [productData, setProductData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    brand: "",
+    gender: "",
+    sizes: [] as string[],
+  });
+  const [productImages, setProductImages] = useState<File[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const token = useSelector((state: RootState) => state.user?.token);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setProductData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleGenderChange = (gender: string) => {
+    setProductData((prevData) => ({ ...prevData, gender }));
+  };
+
+  const handleSizeChange = (size: string, isSelected: boolean) => {
+    setProductData((prevData) => ({
+      ...prevData,
+      sizes: isSelected
+        ? [...prevData.sizes, size]
+        : prevData.sizes.filter((s) => s !== size),
+    }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setProductImages(files);
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setPreviewImages(previews);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("name", productData.name);
+    formData.append("description", productData.description);
+    formData.append("price", productData.price);
+    formData.append("brand", productData.brand || "e-bazaar");
+    formData.append("gender", productData.gender);
+    productData.sizes.forEach((size) => formData.append("sizes", size));
+    productImages.forEach((image) => formData.append("productImages", image));
+
+    try {
+      await axios.post(`${BASE_URL}/product/create-product`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      toast("Product created successfully", {
+        description: "Your product has been added to the catalog.",
+        action: {
+          label: "View Product",
+          onClick: () => console.log("Product viewed"),
+        },
+      });
+      navigate("/admin-dashboard");
+    } catch (error) {
+      console.error("Error creating product", error);
+      toast("Failed to create product", { description: "Please try again." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto p-4 md:p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-2xl font-semibold mb-6 text-center">
+        Create New Product
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Name */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Product Name</label>
+          <Input
+            name="name"
+            value={productData.name}
+            onChange={handleInputChange}
+            placeholder="Enter product name"
+            required
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Description</label>
+          <Textarea
+            name="description"
+            value={productData.description}
+            onChange={handleInputChange}
+            placeholder="Enter product description"
+            maxLength={150}
+          />
+        </div>
+
+        {/* Price */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Price ($)</label>
+          <Input
+            name="price"
+            value={productData.price}
+            onChange={handleInputChange}
+            type="number"
+            min={0}
+            placeholder="Enter price"
+            required
+          />
+        </div>
+
+        {/* Brand */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Brand</label>
+          <Input
+            name="brand"
+            value={productData.brand}
+            onChange={handleInputChange}
+            placeholder="Brand Name"
+          />
+        </div>
+
+        {/* Gender */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Gender</label>
+          <Select onValueChange={handleGenderChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Gender" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {genderOptions.map((gender) => (
+                  <SelectItem key={gender} value={gender}>
+                    {gender}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Sizes */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Sizes</label>
+          <div className="flex flex-wrap gap-2">
+            {sizeOptions.map((size) => (
+              <label key={size} className="flex items-center space-x-2">
+                <Checkbox
+                  checked={productData.sizes.includes(size)}
+                  onCheckedChange={(isSelected) =>
+                    handleSizeChange(size, isSelected)
+                  }
+                />
+                <span>{size}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Product Images */}
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Product Images
+          </label>
+          <Input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          <div className="flex flex-wrap gap-3 mt-3">
+            {previewImages.map((src, index) => (
+              <img
+                key={index}
+                src={src}
+                alt="preview"
+                className="w-24 h-24 object-cover rounded-md border"
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <div>
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full flex items-center justify-center"
+          >
+            {loading ? (
+              <ThreeDots color="#ffffff" height={12} width={40} />
+            ) : (
+              "Create Product"
+            )}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default CreateProduct;
