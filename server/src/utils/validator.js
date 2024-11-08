@@ -57,9 +57,7 @@ const validateProduct = (req) => {
 
   const validSizes = ["XS", "S", "M", "L", "XL"];
   if (!Array.isArray(sizes) || sizes.some((s) => !validSizes.includes(s))) {
-    throw new Error(
-      `Size must be an array of valid sizes: ${validSizes.join(", ")}.`
-    );
+    throw new Error(`Size must be of valid sizes: ${validSizes.join(", ")}.`);
   }
 };
 

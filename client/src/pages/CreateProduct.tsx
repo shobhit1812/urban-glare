@@ -1,5 +1,6 @@
 import axios from "axios";
-import { toast } from "sonner";
+// use sonner in delete product
+// import { toast } from "sonner";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Input } from "@/components/ui/input";
@@ -34,9 +35,10 @@ const CreateProduct: React.FC = () => {
   const [productImages, setProductImages] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<string>("");
 
   const navigate = useNavigate();
-  const token = useSelector((state: RootState) => state.user?.token);
+  const token: string = useSelector((state: RootState) => state.user?.token);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -85,17 +87,11 @@ const CreateProduct: React.FC = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      toast("Product created successfully", {
-        description: "Your product has been added to the catalog.",
-        action: {
-          label: "View Product",
-          onClick: () => console.log("Product viewed"),
-        },
-      });
       navigate("/admin-dashboard");
-    } catch (error) {
-      console.error("Error creating product", error);
-      toast("Failed to create product", { description: "Please try again." });
+    } catch (error: any) {
+      // console.error("Error creating product", error.message);
+      const errorMessage = error.response.data;
+      setErrors(errorMessage.replace("Internal Server Error: ", ""));
     } finally {
       setLoading(false);
     }
@@ -133,7 +129,7 @@ const CreateProduct: React.FC = () => {
 
         {/* Price */}
         <div>
-          <label className="block text-sm font-medium mb-1">Price ($)</label>
+          <label className="block text-sm font-medium mb-1">Price (₹)</label>
           <Input
             name="price"
             value={productData.price}
@@ -215,6 +211,8 @@ const CreateProduct: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {errors && <p className="text-red-500 text-xs mt-1">{errors}</p>}
 
         {/* Submit Button */}
         <div>
