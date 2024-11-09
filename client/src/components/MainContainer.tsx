@@ -18,8 +18,8 @@ const MainContainer: React.FC = () => {
           }
         );
         setProducts(response.data.products);
-      } catch (error) {
-        console.error("Error fetching products:", error);
+      } catch (error: any) {
+        console.error("Error while fetching products:", error.message);
       } finally {
         setLoading(false);
       }

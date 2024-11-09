@@ -7,3 +7,14 @@ export interface Product {
   rating: number;
   sizes: string[];
 }
+
+export interface ProductDetailsProps {
+  _id: string;
+  name: string;
+  brand: string;
+  description: string;
+  price: number;
+  rating: number;
+  sizes: string[];
+  productImages: string[];
+}
