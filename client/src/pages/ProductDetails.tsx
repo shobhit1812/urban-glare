@@ -23,6 +23,7 @@ const ProductDetails: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<ProductDetailsProps | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [enlargedImage, setEnlargedImage] = useState<string | null>(null); // New state for lightbox modal
 
   const user: User = useSelector((state: RootState) => state.user);
 
@@ -60,7 +61,8 @@ const ProductDetails: React.FC = () => {
                     <img
                       src={img}
                       alt={`${product.name} image ${index + 1}`}
-                      className="w-full h-96 md:h-[28rem] lg:h-[32rem] object-contain rounded-lg shadow-md"
+                      className="w-full h-96 md:h-[28rem] lg:h-[32rem] object-contain rounded-lg shadow-md cursor-pointer"
+                      onClick={() => setEnlargedImage(img)} // Set enlarged image on click
                     />
                   </CarouselItem>
                 ))}
@@ -135,6 +137,28 @@ const ProductDetails: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Lightbox Modal for Enlarged Image */}
+      {enlargedImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center"
+          onClick={() => setEnlargedImage(null)} // Close modal on background click
+        >
+          <div className="relative max-w-3xl mx-auto p-4">
+            <img
+              src={enlargedImage}
+              alt="Enlarged product"
+              className="max-h-[90vh] object-contain rounded-lg shadow-lg"
+            />
+            <button
+              className="absolute top-0 right-2 text-2xl p-2 rounded-full text-black hover:text-gray-900"
+              onClick={() => setEnlargedImage(null)} // Close modal on button click
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
