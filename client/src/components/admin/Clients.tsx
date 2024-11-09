@@ -36,32 +36,52 @@ const Clients: React.FC = () => {
   }, [user?.token]);
 
   return (
-    <div className="p-6 bg-white">
-      <h2 className="text-2xl font-semibold mb-6">Clients</h2>
-
+    <div>
       {loading ? (
         <p>Loading clients...</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : clients.length > 0 ? (
-        <table className="min-w-full bg-white border border-gray-300 text-left">
-          <thead>
-            <tr className="bg-gray-100 border-b">
-              <th className="p-4">Client ID</th>
-              <th className="p-4">Name</th>
-              <th className="p-4">Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            {clients.map((client) => (
-              <tr key={client._id} className="border-b hover:bg-gray-50">
-                <td className="p-4">{client._id}</td>
-                <td className="p-4">{client.fullName}</td>
-                <td className="p-4">{client.email}</td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300 text-left hidden sm:table">
+            <thead>
+              <tr className="bg-gray-100 border-b">
+                <th className="p-4">Client ID</th>
+                <th className="p-4">Name</th>
+                <th className="p-4">Email</th>
               </tr>
+            </thead>
+            <tbody>
+              {clients.map((client) => (
+                <tr key={client._id} className="border-b hover:bg-gray-50">
+                  <td className="p-4">{client._id}</td>
+                  <td className="p-4">{client.fullName}</td>
+                  <td className="p-4">{client.email}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Mobile-friendly view */}
+          <div className="space-y-4 sm:hidden">
+            {clients.map((client) => (
+              <div
+                key={client._id}
+                className="p-4 border border-gray-300 rounded-lg bg-white"
+              >
+                <p>
+                  <span className="font-bold">Client ID:</span> {client._id}
+                </p>
+                <p>
+                  <span className="font-bold">Name:</span> {client.fullName}
+                </p>
+                <p>
+                  <span className="font-bold">Email:</span> {client.email}
+                </p>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
       ) : (
         <p>No data available for clients.</p>
       )}

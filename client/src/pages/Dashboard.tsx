@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { User } from "@/helpers/constants/User";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const user: User = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
@@ -15,17 +16,24 @@ const Dashboard: React.FC = () => {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    // Redirect to 'products' as the default tab if we're at '/dashboard'
+    if (location.pathname === "/admin-dashboard") {
+      navigate("/admin-dashboard/products");
+    }
+  }, [location, navigate]);
+
   return (
-    <div className="flex max-w-screen-2xl mx-auto min-h-screen">
-      <aside className="w-full sm:w-1/4 lg:w-1/6 xl:w-1/8 p-4 mr-4">
-        <ul className="space-y-3 p-2">
+    <div className="flex flex-col lg:flex-row max-w-screen-2xl mx-auto min-h-screen">
+      <aside className="top-16 p-5 w-full lg:w-[180px] lg:min-h-screen bg-gray-50 shadow-lg lg:flex lg:flex-col lg:justify-start">
+        <ul className="space-y-4 p-2 font-bold text-lg">
           <li>
             <NavLink
               to="products"
               className={({ isActive }) =>
                 isActive
-                  ? "bg-blue-500 text-white p-2 rounded-lg"
-                  : "hover:text-gray-300 p-2"
+                  ? "bg-blue-500 text-white p-2 rounded-lg block text-center lg:text-left"
+                  : "hover:text-gray-600 p-2 block text-center lg:text-left"
               }
             >
               Products
@@ -36,8 +44,8 @@ const Dashboard: React.FC = () => {
               to="orders"
               className={({ isActive }) =>
                 isActive
-                  ? "bg-blue-500 text-white p-2 rounded-lg"
-                  : "hover:text-gray-300 p-2"
+                  ? "bg-blue-500 text-white p-2 rounded-lg block text-center lg:text-left"
+                  : "hover:text-gray-600 p-2 block text-center lg:text-left"
               }
             >
               Orders
@@ -48,8 +56,8 @@ const Dashboard: React.FC = () => {
               to="clients"
               className={({ isActive }) =>
                 isActive
-                  ? "bg-blue-500 text-white p-2 rounded-lg"
-                  : "hover:text-gray-300 p-2"
+                  ? "bg-blue-500 text-white p-2 rounded-lg block text-center lg:text-left"
+                  : "hover:text-gray-600 p-2 block text-center lg:text-left"
               }
             >
               Clients
@@ -58,10 +66,9 @@ const Dashboard: React.FC = () => {
         </ul>
       </aside>
 
-      {/* Content */}
-      <div className="flex-1 p-6 bg-white">
+      <main className="flex-1 p-4 bg-white">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };
