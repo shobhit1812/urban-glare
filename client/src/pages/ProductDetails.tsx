@@ -2,6 +2,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { User } from "@/helpers/constants/User";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store/store";
 import { BASE_URL } from "@/helpers/constants/server_url";
@@ -14,10 +15,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-
-interface User {
-  isAdmin: boolean;
-}
 
 const ProductDetails: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();

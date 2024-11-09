@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { useState } from "react";
+import logo from "../assets/logo.png";
 import { Input } from "@/components/ui/input";
 import { IoSearchSharp } from "react-icons/io5";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store/store";
+import { User } from "../helpers/constants/User";
 import { ThreeDots } from "react-loader-spinner";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +20,6 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import logo from "../assets/logo.png";
 
 interface UserComponentLink {
   title: string;
@@ -28,12 +29,6 @@ interface UserComponentLink {
 interface AdminComponentLink {
   title: string;
   href: string;
-}
-
-interface User {
-  fullName: string;
-  isAdmin: boolean;
-  token: string;
 }
 
 const userComponents: UserComponentLink[] = [

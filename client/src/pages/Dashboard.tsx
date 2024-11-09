@@ -3,14 +3,10 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { RootState } from "@/redux/store/store";
+import { User } from "@/helpers/constants/User";
 import { Button } from "@/components/ui/button";
+import { RootState } from "@/redux/store/store";
 import { BASE_URL } from "@/helpers/constants/server_url";
-
-interface User {
-  isAdmin: boolean;
-  token: string;
-}
 
 const Dashboard: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState<
