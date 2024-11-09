@@ -25,7 +25,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      default: "e-bazaar",
+      default: "Urban Glare",
     },
     rating: {
       type: Number,

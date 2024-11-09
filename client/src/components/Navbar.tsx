@@ -18,6 +18,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import logo from "../assets/logo.png";
 
 interface UserComponentLink {
   title: string;
@@ -73,16 +74,18 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="px-6 py-3 md:py-4">
+    <nav className="px-6 py-3 md:py-3">
       <div className="flex flex-col md:flex-row items-center justify-between max-w-screen-2xl mx-auto">
-        <div className="font-bold text-xl pt-3 md:text-2xl mr-4 md:mr-8 md:self-start">
-          <Link to="/">E-Bazaar</Link>
+        <div className="mr-4 md:mr-8 md:self-start">
+          <Link to="/">
+            <img src={logo} alt="logo" className="w-28 h-16" />
+          </Link>
         </div>
 
         <div className="flex items-center w-full md:w-1/2 lg:w-2/3 bg-white rounded-md overflow-hidden mt-3 md:mt-0">
           <Input
             className="flex-grow px-4 py-2 outline-none"
-            placeholder="Search E-Bazaar"
+            placeholder="Search Urban Glare"
           />
           <button className="p-2">
             <IoSearchSharp size={24} />

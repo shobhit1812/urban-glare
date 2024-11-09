@@ -18,7 +18,7 @@ async function sendWelcomeEmail(userEmail) {
     html: `
     <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
       <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
-        <h1 style="text-align: center; color: #4CAF50;">Welcome to E-BAZAAR!</h1>
+        <h1 style="text-align: center; color: #4CAF50;">Welcome to URBAN GLARE!</h1>
         <p style="font-size: 16px; color: #555;">
           Hi there! 👋
         </p>
@@ -38,7 +38,7 @@ async function sendWelcomeEmail(userEmail) {
         </p>
         <p style="font-size: 16px; color: #333; font-weight: bold;">
           Best Regards,<br>
-          The e-bazaar team
+          The Urban Glare team
         </p>
       </div>
       <footer style="text-align: center; margin-top: 20px; font-size: 12px; color: #777;">

@@ -99,7 +99,7 @@ const CreateProduct: React.FC = () => {
     formData.append("name", productData.name);
     formData.append("description", productData.description);
     formData.append("price", productData.price);
-    formData.append("brand", productData.brand || "e-bazaar");
+    formData.append("brand", productData.brand || "Urban Glare");
     formData.append("gender", productData.gender);
     formData.append("rating", productData.rating);
     productData.sizes.forEach((size) => formData.append("sizes", size));

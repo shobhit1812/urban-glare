@@ -13,7 +13,7 @@ const uploadOnCloudinary = async (localFilePath, folder_name) => {
 
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
-      folder: `e-bazaar/${folder_name}`,
+      folder: `urban-glare/${folder_name}`,
     });
 
     if (fs.existsSync(localFilePath)) {

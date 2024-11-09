@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Backend for e-bazaar application built using the MERN stack.",
+  "description": "Backend for Urban Glare application built using the MERN stack.",
   "main": "index.js",
   "type": "module",
   "scripts": {
