@@ -9,6 +9,9 @@ import { createBrowserRouter } from "react-router-dom";
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Orders = lazy(() => import("./components/admin/Orders"));
+const Clients = lazy(() => import("./components/admin/Clients"));
+const Products = lazy(() => import("./components/admin/Products"));
 const CreateProduct = lazy(() => import("./pages/CreateProduct"));
 const ProductDetails = lazy(() => import("./pages/ProductDetails"));
 
@@ -34,6 +37,32 @@ const appRouter = createBrowserRouter([
             <Dashboard />
           </LazyLoad>
         ),
+        children: [
+          {
+            path: "products",
+            element: (
+              <LazyLoad>
+                <Products />
+              </LazyLoad>
+            ),
+          },
+          {
+            path: "orders",
+            element: (
+              <LazyLoad>
+                <Orders />
+              </LazyLoad>
+            ),
+          },
+          {
+            path: "clients",
+            element: (
+              <LazyLoad>
+                <Clients />
+              </LazyLoad>
+            ),
+          },
+        ],
       },
       {
         path: "create-product",
