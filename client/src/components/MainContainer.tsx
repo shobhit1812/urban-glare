@@ -2,6 +2,7 @@ import axios from "axios";
 import ProductCards from "./ProductCards";
 import { useEffect, useState } from "react";
 import { Product } from "@/helpers/constants/Product";
+import ProductCardSkeleton from "./ProductCardSkeleton";
 import { BASE_URL } from "@/helpers/constants/server_url";
 
 const MainContainer: React.FC = () => {
@@ -28,15 +29,15 @@ const MainContainer: React.FC = () => {
     fetchProducts();
   }, []);
 
-  if (loading) {
-    return <div className="text-center">Loading products...</div>;
-  }
-
   return (
     <div className="container mx-auto p-6 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-      {products.map((product) => (
-        <ProductCards key={product._id} product={product} />
-      ))}
+      {loading
+        ? Array.from({ length: 9 }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))
+        : products.map((product) => (
+            <ProductCards key={product._id} product={product} />
+          ))}
     </div>
   );
 };

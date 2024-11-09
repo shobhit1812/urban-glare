@@ -8,6 +8,7 @@ import { RootState } from "@/redux/store/store";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { ProductDetailsProps } from "@/helpers/constants/Product";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import ProductDetailsSkeleton from "@/components/ProductDetailsSkeleton";
 import {
   Carousel,
   CarouselContent,
@@ -41,7 +42,7 @@ const ProductDetails: React.FC = () => {
     fetchProduct();
   }, [productId]);
 
-  if (!product) return <p>Loading...</p>;
+  if (!product) return <ProductDetailsSkeleton />;
 
   const formattedPrice = new Intl.NumberFormat("en-IN").format(product.price);
 
