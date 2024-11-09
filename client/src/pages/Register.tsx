@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
+import logo from "../assets/logo.png";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
 import { addUser } from "@/redux/slices/user.slice";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
@@ -35,7 +36,6 @@ const Register: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    // Redirect if user is already logged in
     if (user) {
       navigate("/");
     }
@@ -66,7 +66,11 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center pt-6">
+    <div className="flex flex-col items-center pt-6">
+      <Link to="/">
+        <img src={logo} alt="Logo" className="w-36 h-24 mb-4" />
+      </Link>
+
       <div className="w-full max-w-xs bg-white p-4 rounded-md shadow-md">
         <h1 className="text-2xl font-semibold mb-3">Create Account</h1>
 
@@ -150,12 +154,12 @@ const Register: React.FC = () => {
 
         <p className="text-xs text-center mt-5">
           Already registered?{" "}
-          <a
-            href="/auth/login"
+          <Link
+            to="/auth/login"
             className="text-blue-600 hover:underline hover:text-orange-600"
           >
             Login here
-          </a>
+          </Link>
         </p>
       </div>
     </div>

@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
+import logo from "../assets/logo.png";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
@@ -63,7 +63,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center pt-6">
+    <div className="flex flex-col items-center pt-6">
+      {/* Logo above the sign-in form */}
+      <Link to="/">
+        <img src={logo} alt="Logo" className="w-36 h-24 mb-4" />
+      </Link>
+
       <div className="w-full max-w-xs bg-white p-4 rounded-md shadow-md">
         <h1 className="text-2xl font-semibold mb-3">Sign in</h1>
 
@@ -132,12 +137,12 @@ const Login: React.FC = () => {
 
         <p className="text-xs text-center mt-5">
           New User?{" "}
-          <a
-            href="/auth/register"
+          <Link
+            to="/auth/register"
             className="text-blue-600 hover:underline hover:text-orange-600"
           >
             Register here
-          </a>
+          </Link>
         </p>
       </div>
     </div>
