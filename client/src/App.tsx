@@ -10,6 +10,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CreateProduct = lazy(() => import("./pages/CreateProduct"));
+const ProductDetails = lazy(() => import("./pages/ProductDetails"));
 
 // Reusable component for loading lazy components with fallback
 const LazyLoad = ({ children }: { children: React.ReactNode }) => (
@@ -39,6 +40,14 @@ const appRouter = createBrowserRouter([
         element: (
           <LazyLoad>
             <CreateProduct />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "/:productName/:productBrand/:productId",
+        element: (
+          <LazyLoad>
+            <ProductDetails />
           </LazyLoad>
         ),
       },

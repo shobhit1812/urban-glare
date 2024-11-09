@@ -20,7 +20,10 @@ router.route("/create-product").post(
   createProduct
 );
 
-router.route("/get-all-products").get(verifyJWT, getAllProducts);
-router.route("/get-product/:productId").get(verifyJWT, getProductById);
+// router.route("/get-all-products").get(verifyJWT, getAllProducts);
+// router.route("/get-product/:productId").get(verifyJWT, getProductById);
+
+router.route("/get-all-products").get(getAllProducts);
+router.route("/get-product/:productId").get(getProductById);
 
 export default router;

@@ -1,15 +1,12 @@
 import axios from "axios";
-import { useSelector } from "react-redux";
 import ProductCards from "./ProductCards";
-import { RootState } from "@/redux/store/store";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Product } from "@/helpers/constants/Product";
 import { BASE_URL } from "@/helpers/constants/server_url";
 
 const MainContainer: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -18,9 +15,6 @@ const MainContainer: React.FC = () => {
           `${BASE_URL}/product/get-all-products`,
           {
             withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${user?.token}`,
-            },
           }
         );
         setProducts(response.data.products);

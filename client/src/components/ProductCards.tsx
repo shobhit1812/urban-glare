@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { AiFillStar } from "react-icons/ai";
 import { Product } from "@/helpers/constants/Product";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
@@ -25,11 +26,13 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
   return (
     <Card className="bg-white shadow-md rounded-lg overflow-hidden">
       <CardHeader className="relative">
-        <img
-          src={product.productImages[0]}
-          alt={product.name}
-          className="w-full h-80 object-cover"
-        />
+        <Link to={`/${product?.name}/${product?.brand}/${product?._id}`}>
+          <img
+            src={product.productImages[0]}
+            alt={product.name}
+            className="w-full h-80 object-cover"
+          />
+        </Link>
         <button
           onClick={() => setIsFavorite(!isFavorite)}
           className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md"
@@ -44,7 +47,10 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
 
       <CardContent>
         <CardDescription className="text-lg p-1">
-          {product.name}
+          <Link to={`/${product?.name}/${product?.brand}/${product?._id}`}>
+            {" "}
+            {product.name}
+          </Link>
         </CardDescription>
 
         <CardDescription className="p-1 flex">
