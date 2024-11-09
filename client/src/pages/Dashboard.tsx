@@ -147,7 +147,7 @@ const Dashboard: React.FC = () => {
                       <td className="p-4">{product.name}</td>
                       <td className="p-4">${product.price}</td>
                       <td className="p-4 space-x-2">
-                        <Button className="bg-blue-700 hover:bg-blue-600">
+                        <Button className="bg-yellow-500 hover:bg-yellow-600">
                           Edit
                         </Button>
                         <Button variant="destructive">Delete</Button>

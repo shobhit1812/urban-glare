@@ -1,7 +1,9 @@
 import axios from "axios";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { RootState } from "@/redux/store/store";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { ProductDetailsProps } from "@/helpers/constants/Product";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
@@ -13,10 +15,16 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+interface User {
+  isAdmin: boolean;
+}
+
 const ProductDetails: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<ProductDetailsProps | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
+
+  const user: User = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -115,9 +123,15 @@ const ProductDetails: React.FC = () => {
             </div>
 
             {/* Add to Cart Button */}
-            <Button className="w-full py-3 rounded-lg text-lg">
-              Add to Cart
-            </Button>
+            {!user?.isAdmin ? (
+              <Button className="w-full py-3 rounded-lg text-lg">
+                Add to Cart
+              </Button>
+            ) : (
+              <Button className="w-full bg-yellow-500 hover:bg-yellow-600 py-3 rounded-lg text-lg">
+                Edit Product
+              </Button>
+            )}
           </div>
         </div>
       </div>

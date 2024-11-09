@@ -36,7 +36,6 @@ interface User {
 }
 
 const userComponents: UserComponentLink[] = [
-  { title: "Sign in", href: "/auth/login" },
   { title: "Orders", href: "/orders" },
   { title: "Wishlist", href: "/wishlist" },
   { title: "Customer Service", href: "/customer-service" },
@@ -102,16 +101,28 @@ const Navbar: React.FC = () => {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="p-4 rounded-md shadow-md">
                   <ul className="w-36 gap-2 flex flex-col">
+                    {/* is user is logged in than don't show sign in */}
+                    {!user?.fullName && (
+                      <li>
+                        <Link
+                          to="/auth/login"
+                          className="text-gray-800 hover:underline"
+                        >
+                          Sign in
+                        </Link>
+                      </li>
+                    )}
+
                     {user
                       ? (user?.isAdmin ? adminComponents : userComponents).map(
                           (component) => (
                             <li key={component.title}>
-                              <a
-                                href={component.href}
+                              <Link
+                                to={component.href}
                                 className="text-gray-800 hover:underline"
                               >
                                 {component.title}
-                              </a>
+                              </Link>
                             </li>
                           )
                         )
