@@ -57,17 +57,25 @@ const createProduct = async (req, res) => {
 //   }
 // };
 
-const getAllProducts = async (_, res) => {
-  try {
-    const products = await Product.find({});
+const getAllProducts = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 9;
+  const skip = (page - 1) * limit;
 
-    if (!products.length) {
-      return res.send(404).send("No products found.");
-    }
+  try {
+    const products = await Product.aggregate([
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    const totalProducts = await Product.countDocuments();
+    const totalPages = Math.ceil(totalProducts / limit);
 
     return res.status(200).json({
       message: "Products fetched successfully.",
-      products: products,
+      products,
+      currentPage: page,
+      totalPages,
     });
   } catch (error) {
     res.status(500).send("Internal Server Error: " + error.message);
