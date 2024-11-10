@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { User } from "@/helpers/constants/User";
 import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,15 @@ const Products: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const navigate = useNavigate();
   const user: User = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    // Redirect if user is not admin
+    if (!user?.isAdmin) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const fetchProducts = async () => {
