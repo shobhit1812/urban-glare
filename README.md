@@ -70,3 +70,4 @@ This simplifies the code while ensuring the input meets your requirements.
 4. see the difference between upload on cloudinary in memoir, yt, Urban Glare
 5. when i get product (the data should be coming in random order)
 6. What is NavLink.
+7. use lucide react instead of react-icons

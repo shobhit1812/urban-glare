@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
-import { User } from "@/helpers/constants/User";
+import { User } from "@/helpers/constants/user";
 
 const Orders = () => {
   const navigate = useNavigate();

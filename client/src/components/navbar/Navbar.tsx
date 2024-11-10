@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { useState } from "react";
-import logo from "../assets/logo.png";
+import logo from "@/assets/logo.png";
 import { Input } from "@/components/ui/input";
 import { IoSearchSharp } from "react-icons/io5";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store/store";
-import { User } from "../helpers/constants/User";
+import { User } from "@/helpers/constants/user";
 import { ThreeDots } from "react-loader-spinner";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -99,7 +99,7 @@ const Navbar: React.FC = () => {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="p-4 rounded-md shadow-md">
                   <ul className="w-36 gap-2 flex flex-col">
-                    {/* is user is logged in than don't show sign in */}
+                    {/* if user is logged in than don't show sign in */}
                     {!user?.fullName && (
                       <li>
                         <Link

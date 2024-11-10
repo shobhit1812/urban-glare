@@ -1,7 +1,7 @@
 import React from "react";
-import Sidebar from "@/components/Sidebar";
-import MainContainer from "@/components/MainContainer";
-import SecondaryContainer from "@/components/SecondaryContainer";
+import Sidebar from "@/components/browse/Sidebar";
+import MainContainer from "@/components/browse/MainContainer";
+import SecondaryContainer from "@/components/browse/SecondaryContainer";
 
 const Browse: React.FC = () => {
   return (

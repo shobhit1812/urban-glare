@@ -1,16 +1,18 @@
 import axios from "axios";
-import ProductCards from "./ProductCards";
+import ProductCards from "../ProductCards";
 import { useEffect, useState } from "react";
-import { Product } from "@/helpers/constants/Product";
-import ProductCardSkeleton from "./ProductCardSkeleton";
+import { Product } from "@/helpers/constants/product";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import ProductCardSkeleton from "../skeleton/ProductCardSkeleton";
 
 const MainContainer: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
+
       try {
         const response = await axios.get(
           `${BASE_URL}/product/get-all-products`,

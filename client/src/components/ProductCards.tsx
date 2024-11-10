@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { AiFillStar } from "react-icons/ai";
-import { Product } from "@/helpers/constants/Product";
+import { Product } from "@/helpers/constants/product";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   Card,

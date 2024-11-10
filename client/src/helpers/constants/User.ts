@@ -5,5 +5,4 @@ export interface User {
   password: string;
   isAdmin: boolean;
   token: string;
-  name: string;
 }

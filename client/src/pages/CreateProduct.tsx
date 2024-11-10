@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
 import { AiOutlineClose } from "react-icons/ai";
-import { User } from "@/helpers/constants/User";
+import { User } from "@/helpers/constants/user";
 import { ThreeDots } from "react-loader-spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
