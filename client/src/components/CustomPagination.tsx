@@ -1,11 +1,8 @@
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
-  PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
+  PaginationContent,
 } from "@/components/ui/pagination";
 
 interface PaginationProps {
@@ -19,37 +16,30 @@ const CustomPagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  const handlePageChange = (newPage: number) => {
+    window.scrollTo(0, 0);
+    onPageChange(newPage);
+  };
+
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious
+          <Button
             disabled={page <= 1}
-            onClick={() => onPageChange(page - 1)}
-          />
-        </PaginationItem>
-
-        {/* Sample Page Numbers for illustration */}
-        {[...Array(totalPages).keys()].map((_, idx) => (
-          <PaginationItem key={idx}>
-            <PaginationLink
-              onClick={() => onPageChange(idx + 1)}
-              isActive={page === idx + 1}
-            >
-              {idx + 1}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
-
-        <PaginationItem>
-          <PaginationEllipsis />
+            onClick={() => handlePageChange(page - 1)}
+          >
+            Previous
+          </Button>
         </PaginationItem>
 
         <PaginationItem>
-          <PaginationNext
+          <Button
             disabled={page >= totalPages}
-            onClick={() => onPageChange(page + 1)}
-          />
+            onClick={() => handlePageChange(page + 1)}
+          >
+            Next
+          </Button>
         </PaginationItem>
       </PaginationContent>
     </Pagination>
