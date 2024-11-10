@@ -25,6 +25,8 @@ const Products: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
+      setError(null);
+
       try {
         const response = await axios.get(
           `${BASE_URL}/product/get-all-products`,

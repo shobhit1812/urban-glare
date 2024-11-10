@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { useState } from "react";
+import SearchBar from "./SearchBar";
 import logo from "@/assets/logo.png";
-import { Input } from "@/components/ui/input";
-import { IoSearchSharp } from "react-icons/io5";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store/store";
@@ -77,15 +76,7 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        <div className="flex items-center w-full md:w-1/2 lg:w-2/3 bg-white rounded-md overflow-hidden mt-3 md:mt-0">
-          <Input
-            className="flex-grow px-4 py-2 outline-none"
-            placeholder="Search Urban Glare"
-          />
-          <button className="p-2">
-            <IoSearchSharp size={24} />
-          </button>
-        </div>
+        <SearchBar />
 
         <div className="flex flex-col items-center mx-4 md:mx-6">
           <p className="text-xs hidden md:block mr-4 md:mr-6">
