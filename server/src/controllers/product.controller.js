@@ -105,4 +105,29 @@ const getProductById = async (req, res) => {
   }
 };
 
-export { createProduct, getAllProducts, getProductById };
+const getFilteredProducts = async (req, res) => {
+  try {
+    const searchText = req.query.searchText || "";
+
+    const searchQuery = searchText
+      ? {
+          $or: [
+            { name: { $regex: searchText, $options: "i" } },
+            { brand: { $regex: searchText, $options: "i" } },
+            { gender: { $regex: searchText, $options: "i" } },
+          ],
+        }
+      : {};
+
+    const products = await Product.find(searchQuery);
+
+    return res.status(200).json({
+      message: "Filtered products fetched successfully.",
+      products,
+    });
+  } catch (error) {
+    res.status(500).send("Internal Server Error: " + error.message);
+  }
+};
+
+export { createProduct, getAllProducts, getProductById, getFilteredProducts };

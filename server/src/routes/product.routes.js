@@ -5,6 +5,7 @@ import {
   createProduct,
   getAllProducts,
   getProductById,
+  getFilteredProducts,
 } from "../controllers/product.controller.js";
 
 const router = Router();
@@ -25,5 +26,6 @@ router.route("/create-product").post(
 
 router.route("/get-all-products").get(getAllProducts);
 router.route("/get-product/:productId").get(getProductById);
+router.route("/get-filtered-products").get(getFilteredProducts);
 
 export default router;
