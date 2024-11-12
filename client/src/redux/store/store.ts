@@ -1,5 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userSlice from "../slices/user.slice";
+import allProductSlice from "../slices/allProducts.slice";
+import filteredProductSlice from "../slices/filteredProducts.slice";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage
 import { persistStore, persistReducer } from "redux-persist";
 import {
@@ -15,12 +17,14 @@ import {
 const persistConfig = {
   key: "root", // Sets the key used to store the data in local storage.
   storage, // Specifies that the data will be saved in localStorage (can also use other storage types).
-  whitelist: ["user"], // Only the user slice will be saved (persisted); other slices, if they exist, won’t be saved.
+  whitelist: ["user", "allProduct", "filteredProduct"], // Only the user slice will be saved (persisted); other slices, if they exist, won’t be saved.
 };
 
 // Combine reducers (in case there are more reducers in the future)
 const rootReducer = combineReducers({
   user: userSlice,
+  allProduct: allProductSlice,
+  filteredProduct: filteredProductSlice,
 });
 
 // Wraps rootReducer with persistReducer, adding persistence to the user data. This means Redux will manage the user state, and redux-persist will handle saving it across page reloads.
