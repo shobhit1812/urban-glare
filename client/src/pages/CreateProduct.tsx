@@ -143,7 +143,7 @@ const CreateProduct: React.FC = () => {
             value={productData.description}
             onChange={handleInputChange}
             placeholder="Enter product description"
-            maxLength={150}
+            maxLength={300}
           />
         </div>
 

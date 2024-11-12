@@ -39,8 +39,6 @@ const MainContainer: React.FC = () => {
           }
         );
         const data = response.data.products;
-        console.log(data);
-
         dispatch(addProduct(data));
         setTotalPages(response.data.totalPages);
       } catch (error: any) {
