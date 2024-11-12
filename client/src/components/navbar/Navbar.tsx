@@ -12,6 +12,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "@/redux/slices/user.slice";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { clearProducts } from "@/redux/slices/filteredProducts.slice";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -48,6 +49,10 @@ const Navbar: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const handleLogoClick = () => {
+    dispatch(clearProducts());
+  };
+
   const handleLogout = async () => {
     setLoading(true);
 
@@ -71,7 +76,7 @@ const Navbar: React.FC = () => {
     <nav className="px-6 py-3 md:py-3">
       <div className="flex flex-col md:flex-row items-center justify-between max-w-screen-2xl mx-auto">
         <div className="mr-4 md:mr-8 md:self-start">
-          <Link to="/">
+          <Link to="/" onClick={handleLogoClick}>
             <img src={logo} alt="logo" className="w-28 h-16" />
           </Link>
         </div>

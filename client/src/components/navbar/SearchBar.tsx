@@ -1,11 +1,14 @@
 import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { IoSearchSharp } from "react-icons/io5";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { addFilteredProduct } from "@/redux/slices/filteredProducts.slice";
 
 const SearchBar: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
+  const dispatch = useDispatch();
 
   const fetchFilteredProducts = async (searchText: string) => {
     try {
@@ -16,7 +19,8 @@ const SearchBar: React.FC = () => {
           withCredentials: true,
         }
       );
-      console.log(response.data.products);
+      const filteredData = response.data.products;
+      dispatch(addFilteredProduct(filteredData));
     } catch (error: any) {
       console.log("Cannot fetch data: ", error.message);
     }
@@ -35,8 +39,12 @@ const SearchBar: React.FC = () => {
       <button
         className="p-2"
         onClick={() => {
-          fetchFilteredProducts(searchText);
-          setSearchText("");
+          if (searchText === "") {
+            alert("write something");
+          } else {
+            fetchFilteredProducts(searchText);
+            setSearchText("");
+          }
         }}
       >
         <IoSearchSharp size={24} />

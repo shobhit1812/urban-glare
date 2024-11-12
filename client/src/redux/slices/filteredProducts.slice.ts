@@ -7,11 +7,15 @@ const filteredProductSlice = createSlice({
   name: "filteredProduct",
   initialState,
   reducers: {
-    addFilteredProduct: (state, action: PayloadAction<Product>) => {
-      state.push(action.payload);
+    addFilteredProduct: (_, action: PayloadAction<Product[]>) => {
+      return action.payload;
+    },
+    clearProducts: () => {
+      return [];
     },
   },
 });
 
-export const { addFilteredProduct } = filteredProductSlice.actions;
+export const { addFilteredProduct, clearProducts } =
+  filteredProductSlice.actions;
 export default filteredProductSlice.reducer;

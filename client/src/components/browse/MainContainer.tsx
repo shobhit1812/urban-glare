@@ -1,19 +1,33 @@
 import axios from "axios";
 import ProductCards from "../ProductCards";
 import { useEffect, useState } from "react";
+import { RootState } from "@/redux/store/store";
 import CustomPagination from "../CustomPagination";
 import { Product } from "@/helpers/constants/product";
+import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { addProduct } from "@/redux/slices/allProducts.slice";
 import ProductCardSkeleton from "../skeleton/ProductCardSkeleton";
 
 const MainContainer: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
+  const dispatch = useDispatch();
+  const allProducts = useSelector((state: RootState) => state.allProduct);
+  const filteredProducts = useSelector(
+    (state: RootState) => state.filteredProduct
+  );
+
+  const isFiltered = filteredProducts.length > 0;
+  const productsToDisplay =
+    isFiltered && filteredProducts ? filteredProducts : allProducts ?? [];
+
   useEffect(() => {
     const fetchProducts = async () => {
+      if (isFiltered) return; // Skip fetching if we have filtered products
+
       setLoading(true);
 
       try {
@@ -24,7 +38,10 @@ const MainContainer: React.FC = () => {
             withCredentials: true,
           }
         );
-        setProducts(response.data.products);
+        const data = response.data.products;
+        console.log(data);
+
+        dispatch(addProduct(data));
         setTotalPages(response.data.totalPages);
       } catch (error: any) {
         console.error("Error while fetching products:", error.message);
@@ -34,7 +51,7 @@ const MainContainer: React.FC = () => {
     };
 
     fetchProducts();
-  }, [page]);
+  }, [page, dispatch, isFiltered]);
 
   return (
     <div>
@@ -43,19 +60,21 @@ const MainContainer: React.FC = () => {
           ? Array.from({ length: 9 }).map((_, index) => (
               <ProductCardSkeleton key={index} />
             ))
-          : products.map((product) => (
+          : productsToDisplay.map((product: Product) => (
               <ProductCards key={product._id} product={product} />
             ))}
       </div>
 
-      {/* Use Custom Pagination Component */}
-      <div className="flex justify-center mt-6 space-x-4">
-        <CustomPagination
-          page={page}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {/* Show Pagination Only for All Products */}
+      {!isFiltered && (
+        <div className="flex justify-center mt-6 space-x-4">
+          <CustomPagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 };
