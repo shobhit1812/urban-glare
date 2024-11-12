@@ -28,9 +28,7 @@ const getUserById = async (req, res) => {
       user: user,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Internal Server Error", error: error.message });
+    res.status(500).send("Internal Server Error: ", error.message);
   }
 };
 

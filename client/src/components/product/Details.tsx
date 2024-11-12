@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { User } from "@/helpers/constants/user";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store/store";
+import { ThreeDots } from "react-loader-spinner";
 import { Product } from "@/helpers/constants/product";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
@@ -21,9 +22,38 @@ const Details: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [enlargedImage, setEnlargedImage] = useState<string | null>(null); // New state for lightbox modal
+  const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const user: User = useSelector((state: RootState) => state.user);
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      return alert("Please log in to add items to the cart.");
+    }
+
+    setLoading(true);
+
+    try {
+      await axios.post(
+        `${BASE_URL}/cart/add-to-cart`,
+        { userId: user?._id, productId, quantity: 1 },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+
+      alert("Product added to cart successfully!");
+    } catch (error: any) {
+      console.error("Error adding to cart:", error.message);
+      alert("Failed to add product to cart.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -60,7 +90,7 @@ const Details: React.FC = () => {
                       src={img}
                       alt={`${product.name} image ${index + 1}`}
                       className="w-full h-96 md:h-[28rem] lg:h-[32rem] object-contain rounded-lg shadow-md cursor-pointer"
-                      onClick={() => setEnlargedImage(img)} // Set enlarged image on click
+                      onClick={() => setEnlargedImage(img)}
                     />
                   </CarouselItem>
                 ))}
@@ -124,8 +154,22 @@ const Details: React.FC = () => {
 
             {/* Add to Cart Button */}
             {!user?.isAdmin ? (
-              <Button className="w-full py-3 rounded-lg text-lg">
-                Add to Cart
+              <Button
+                onClick={handleAddToCart}
+                className="w-full py-3 rounded-lg text-lg flex items-center justify-center"
+                disabled={loading}
+              >
+                {loading ? (
+                  <ThreeDots
+                    height="30"
+                    width="30"
+                    color="#ffffff"
+                    ariaLabel="three-dots-loading"
+                    visible={true}
+                  />
+                ) : (
+                  "Add to Cart"
+                )}
               </Button>
             ) : (
               <Button className="w-full bg-yellow-500 hover:bg-yellow-600 py-3 rounded-lg text-lg">
@@ -140,7 +184,7 @@ const Details: React.FC = () => {
       {enlargedImage && (
         <div
           className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center"
-          onClick={() => setEnlargedImage(null)} // Close modal on background click
+          onClick={() => setEnlargedImage(null)}
         >
           <div className="relative max-w-3xl mx-auto p-4">
             <img
@@ -150,7 +194,7 @@ const Details: React.FC = () => {
             />
             <button
               className="absolute top-0 right-2 text-2xl p-2 rounded-full text-black hover:text-gray-900"
-              onClick={() => setEnlargedImage(null)} // Close modal on button click
+              onClick={() => setEnlargedImage(null)}
             >
               &times;
             </button>

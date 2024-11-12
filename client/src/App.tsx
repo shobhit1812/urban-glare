@@ -7,12 +7,13 @@ import { createBrowserRouter } from "react-router-dom";
 
 // Lazy load components
 const Login = lazy(() => import("./pages/Login"));
+const Cart = lazy(() => import("./pages/Cart"));
 const Register = lazy(() => import("./pages/Register"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Orders = lazy(() => import("./components/admin/Orders"));
 const Clients = lazy(() => import("./components/admin/Clients"));
-const Products = lazy(() => import("./components/admin/Products"));
 const CreateProduct = lazy(() => import("./pages/CreateProduct"));
+const Products = lazy(() => import("./components/admin/Products"));
 const ProductDetails = lazy(() => import("./pages/ProductDetails"));
 
 // Reusable component for loading lazy components with fallback
@@ -77,6 +78,14 @@ const appRouter = createBrowserRouter([
         element: (
           <LazyLoad>
             <ProductDetails />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <LazyLoad>
+            <Cart />
           </LazyLoad>
         ),
       },

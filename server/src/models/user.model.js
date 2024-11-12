@@ -48,15 +48,30 @@ const userSchema = new mongoose.Schema(
     token: {
       type: String,
     },
-    // FIXME
-    // cart: {
-    //   type: String,
-    // reference of product only
-    // },
-    // favorites: {
-    //   type: String,
-    // reference of product only
-    // },
+    cart: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          default: 1,
+        },
+        totalAmount: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
   },
   { timestamps: true }
 );

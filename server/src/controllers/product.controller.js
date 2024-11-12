@@ -86,6 +86,7 @@ const getProductById = async (req, res) => {
   try {
     const { productId } = req.params;
 
+    // BUG: use validator
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).send("Invalid product ID.");
     }

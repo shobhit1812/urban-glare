@@ -161,7 +161,9 @@ const Navbar: React.FC = () => {
 
         {!user?.isAdmin && (
           <div className="flex items-center relative mt-3 md:mt-0 cursor-pointer">
-            <CiShoppingCart size={30} className="mr-1 relative" />
+            <Link to="/cart">
+              <CiShoppingCart size={30} className="mr-1 relative" />
+            </Link>
             <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-600 text-xs text-white rounded-full px-2 py-0.5">
               0
             </span>
