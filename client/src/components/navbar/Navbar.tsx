@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
-import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import logo from "@/assets/logo.png";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store/store";
@@ -12,6 +13,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "@/redux/slices/user.slice";
 import { BASE_URL } from "@/helpers/constants/server_url";
+// import { fetchCartItems } from "@/redux/slices/cart.slice";
 import { clearProducts } from "@/redux/slices/filteredProducts.slice";
 import {
   NavigationMenu,
@@ -20,9 +22,6 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-
-import { fetchCartItems } from "@/redux/slices/cart.slice";
-import { toast } from "react-toastify";
 
 interface UserComponentLink {
   title: string;
@@ -48,22 +47,39 @@ const adminComponents: AdminComponentLink[] = [
 
 const Navbar: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [cartItems, setCartItems] = useState<number>();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const user: User | null = useSelector((state: RootState) => state.user);
-  const cartItems = useSelector((state: RootState) => state.cart?.itemsCount);
+  // const cartItems = useSelector((state: RootState) => state.cart?.itemsCount);
 
   const handleLogoClick = () => {
     dispatch(clearProducts());
   };
 
   useEffect(() => {
-    if (user?.token) {
-      dispatch(fetchCartItems(user?.token));
-    }
-  }, [user, dispatch]);
+    const timer = setTimeout(() => {
+      const fetchCartLength = async () => {
+        try {
+          const response = await axios.get(`${BASE_URL}/cart/get-cart-items`, {
+            headers: { Authorization: `Bearer ${user?.token}` },
+            withCredentials: true,
+          });
+          console.log(response.data.cart.length);
+          setCartItems(response.data.cart.length);
+        } catch (error: any) {
+          console.log(error.message);
+        }
+      };
+      fetchCartLength();
+    }, 200);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [user]);
 
   const handleLogout = async () => {
     setLoading(true);
@@ -183,7 +199,7 @@ const Navbar: React.FC = () => {
               <CiShoppingCart size={30} className="mr-1 relative" />
             </Link>
             <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-600 text-xs text-white rounded-full px-2 py-0.5">
-              {cartItems}
+              {!user ? "0" : cartItems}
             </span>
           </div>
         )}

@@ -1,4 +1,5 @@
 import axios from "axios";
+import logo from "@/assets/logo.png";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { RootState } from "@/redux/store/store";
@@ -140,7 +141,7 @@ const CartItemsSection: React.FC<CartItemsSectionProps> = ({
           >
             <div className="flex items-center gap-4">
               <img
-                src={item.productId?.productImages[0]}
+                src={item.productId?.productImages[0] || logo}
                 alt={item.productId?.name}
                 className="w-20 h-20 object-cover rounded"
               />
