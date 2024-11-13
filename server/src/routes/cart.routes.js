@@ -4,6 +4,7 @@ import {
   incrementCartQuantity,
   decrementFromCart,
   clearCart,
+  removeItemFromCart,
   getCartItems,
 } from "../controllers/cart.controller.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
@@ -16,6 +17,7 @@ router
   .patch(verifyJWT, incrementCartQuantity);
 router.route("/decrement-from-cart").patch(verifyJWT, decrementFromCart);
 router.route("/clear-cart").delete(verifyJWT, clearCart);
+router.route("/remove-item-from-cart").delete(verifyJWT, removeItemFromCart);
 router.route("/get-cart-items").get(verifyJWT, getCartItems);
 
 export default router;

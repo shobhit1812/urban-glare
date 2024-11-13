@@ -47,13 +47,14 @@ const addToCart = async (req, res) => {
 
 const incrementCartQuantity = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    const { _id } = req.user;
+    const { productId } = req.body;
 
-    if (!isValidObjectId(userId) || !isValidObjectId(productId)) {
+    if (!isValidObjectId(_id) || !isValidObjectId(productId)) {
       return res.status(400).send("Invalid user ID or product ID.");
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(_id);
     const cartItem = user.cart.find(
       (item) => item.productId.toString() === productId
     );
@@ -81,13 +82,14 @@ const incrementCartQuantity = async (req, res) => {
 
 const decrementFromCart = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    const { _id } = req.user;
+    const { productId } = req.body;
 
-    if (!isValidObjectId(userId) || !isValidObjectId(productId)) {
+    if (!isValidObjectId(_id) || !isValidObjectId(productId)) {
       return res.status(400).send("Invalid user ID or product ID.");
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(_id);
     const cartItemIndex = user.cart.findIndex(
       (item) => item.productId.toString() === productId
     );
@@ -122,13 +124,13 @@ const decrementFromCart = async (req, res) => {
 
 const clearCart = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { _id } = req.user;
 
-    if (!isValidObjectId(userId)) {
+    if (!isValidObjectId(_id)) {
       return res.status(400).send("Invalid user ID.");
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(_id);
     user.cart = [];
 
     await user.save();
@@ -147,6 +149,12 @@ const getCartItems = async (req, res) => {
     }
 
     const user = await User.findById(_id).populate("cart.productId");
+    // const user = await User.findById(_id)
+    //   .select("fullName email token cart favorites")
+    //   .populate({
+    //     path: "cart",
+    //     select: "productId quantity totalAmount",
+    //   });
 
     if (!user) {
       return res.status(404).send("User not found.");
@@ -162,6 +170,44 @@ const getCartItems = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).send("Internal Server Error: ", error.message);
+  }
+};
+
+const removeItemFromCart = async (req, res) => {
+  try {
+    const { _id } = req.user;
+    const { productId } = req.body;
+
+    if (!isValidObjectId(_id) || !isValidObjectId(productId)) {
+      return res.status(400).send("Invalid user ID or product ID.");
+    }
+
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return res.status(404).send("User not found.");
+    }
+
+    const cartItemIndex = user.cart.findIndex(
+      (item) => item.productId.toString() === productId
+    );
+
+    if (cartItemIndex === -1) {
+      return res.status(404).send("Product not found in cart.");
+    }
+
+    user.cart.splice(cartItemIndex, 1);
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Product removed from cart successfully.",
+      cart: user.cart,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .send("Error removing item from cart: " + error.message);
   }
 };
 
@@ -191,5 +237,6 @@ export {
   decrementFromCart,
   clearCart,
   getCartItems,
+  removeItemFromCart,
   toggleFavorite,
 };

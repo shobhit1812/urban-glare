@@ -31,7 +31,7 @@ const Cart: React.FC = () => {
           withCredentials: true,
         }
       );
-      setCartItems(response.data.cart);
+      setCartItems(response?.data?.cart);
     } catch (error: any) {
       console.error("Error fetching cart items:", error.message);
     } finally {
@@ -60,7 +60,7 @@ const Cart: React.FC = () => {
           withCredentials: true,
         }
       );
-      setCartItems(response.data.cart);
+      setCartItems(response?.data?.cart);
     } catch (error: any) {
       console.error("Error updating quantity:", error.message);
     }
@@ -68,7 +68,7 @@ const Cart: React.FC = () => {
 
   const handleRemoveItem = async (productId: string) => {
     try {
-      await axios.delete(`${BASE_URL}/cart/remove-item`, {
+      await axios.delete(`${BASE_URL}/cart/remove-item-from-cart`, {
         headers: {
           Authorization: `Bearer ${user?.token}`,
         },
@@ -76,7 +76,7 @@ const Cart: React.FC = () => {
         withCredentials: true,
       });
       setCartItems((prev) =>
-        prev.filter((item) => item.productId._id !== productId)
+        prev.filter((item) => item?.productId?._id !== productId)
       );
     } catch (error: any) {
       console.error("Error removing item from cart:", error.message);
@@ -184,9 +184,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   cartItems,
   onClearCart,
 }) => {
-  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const totalItems = cartItems.reduce((acc, item) => acc + item?.quantity, 0);
   const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.productId.price * item.quantity,
+    (acc, item) => acc + item?.productId?.price * item?.quantity,
     0
   );
 
