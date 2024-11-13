@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -29,7 +30,12 @@ const Details: React.FC = () => {
 
   const handleAddToCart = async () => {
     if (!user) {
-      return alert("Please log in to add items to the cart.");
+      return toast.info("Please login to add items to the cart.", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
     }
 
     setLoading(true);
@@ -45,11 +51,14 @@ const Details: React.FC = () => {
           },
         }
       );
-
-      alert("Product added to cart successfully!");
     } catch (error: any) {
       console.error("Error adding to cart:", error.message);
-      alert("Failed to add product to cart.");
+      toast.error("Error adding to cart.", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
     } finally {
       setLoading(false);
     }

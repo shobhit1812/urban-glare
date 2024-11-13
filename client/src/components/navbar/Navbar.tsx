@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
+import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import logo from "@/assets/logo.png";
-import { useEffect, useState } from "react";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store/store";
@@ -20,6 +20,9 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+
+import { fetchCartItems } from "@/redux/slices/cart.slice";
+import { toast } from "react-toastify";
 
 interface UserComponentLink {
   title: string;
@@ -45,15 +48,22 @@ const adminComponents: AdminComponentLink[] = [
 
 const Navbar: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [cartItems, setCartItems] = useState<number>();
 
-  const user: User | null = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const user: User | null = useSelector((state: RootState) => state.user);
+  const cartItems = useSelector((state: RootState) => state.cart?.itemsCount);
 
   const handleLogoClick = () => {
     dispatch(clearProducts());
   };
+
+  useEffect(() => {
+    if (user?.token) {
+      dispatch(fetchCartItems(user?.token));
+    }
+  }, [user, dispatch]);
 
   const handleLogout = async () => {
     setLoading(true);
@@ -67,36 +77,18 @@ const Navbar: React.FC = () => {
       });
       dispatch(removeUser({}));
       navigate("/");
+      toast.success("Successfully logout!!!", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
     } catch (error: any) {
       console.error("Error logging out:", error.message);
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get<{ cart: CartItem[] }>(
-          `${BASE_URL}/cart/get-cart-items`,
-          {
-            headers: {
-              Authorization: `Bearer ${user?.token}`,
-            },
-            withCredentials: true,
-          }
-        );
-        setCartItems(response.data.cart.length);
-      } catch (error: any) {
-        console.error("Error fetching cart items:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCartItems();
-  }, []);
 
   return (
     <nav className="px-6 py-3 md:py-3">

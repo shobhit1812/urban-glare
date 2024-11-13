@@ -4,14 +4,8 @@ import { useEffect, useState } from "react";
 import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
-import { Product } from "@/helpers/constants/product";
+import { CartItem } from "@/helpers/constants/cartItem";
 import { BASE_URL } from "@/helpers/constants/server_url";
-
-interface CartItem {
-  productId: Product;
-  quantity: number;
-  _id: string;
-}
 
 const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);

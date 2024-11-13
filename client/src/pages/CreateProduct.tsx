@@ -1,6 +1,5 @@
 import axios from "axios";
-// use sonner in delete product
-// import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -109,6 +108,12 @@ const CreateProduct: React.FC = () => {
         },
       });
       navigate("/admin-dashboard");
+      toast.success("Product created successfully!!!", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
     } catch (error: any) {
       const errorMessage = error.response.data;
       setErrors(errorMessage.replace("Internal Server Error: ", ""));
