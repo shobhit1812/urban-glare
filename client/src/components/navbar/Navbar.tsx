@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
-import { useState } from "react";
 import SearchBar from "./SearchBar";
 import logo from "@/assets/logo.png";
+import { useEffect, useState } from "react";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store/store";
@@ -45,6 +45,8 @@ const adminComponents: AdminComponentLink[] = [
 
 const Navbar: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [cartItems, setCartItems] = useState<number>();
+
   const user: User | null = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -71,6 +73,30 @@ const Navbar: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get<{ cart: CartItem[] }>(
+          `${BASE_URL}/cart/get-cart-items`,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+            withCredentials: true,
+          }
+        );
+        setCartItems(response.data.cart.length);
+      } catch (error: any) {
+        console.error("Error fetching cart items:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCartItems();
+  }, []);
 
   return (
     <nav className="px-6 py-3 md:py-3">
@@ -165,7 +191,7 @@ const Navbar: React.FC = () => {
               <CiShoppingCart size={30} className="mr-1 relative" />
             </Link>
             <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-600 text-xs text-white rounded-full px-2 py-0.5">
-              0
+              {cartItems}
             </span>
           </div>
         )}

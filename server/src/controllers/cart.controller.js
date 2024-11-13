@@ -41,33 +41,82 @@ const addToCart = async (req, res) => {
       cart: user.cart,
     });
   } catch (error) {
-    res.status(500).send(`Error adding to cart: ${error.message}`);
+    res.status(500).send("Error adding to cart: ", error.message);
   }
 };
 
-const deleteFromCart = async (req, res) => {
+const incrementCartQuantity = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const { productId } = req.body;
+    const { userId, productId } = req.body;
 
-    // Validate user ID and product ID
-    if (!isValidObjectId(userId) || !validateObjectId(productId)) {
-      return res.status(404).send("Invalid user ID or product ID.");
+    if (!isValidObjectId(userId) || !isValidObjectId(productId)) {
+      return res.status(400).send("Invalid user ID or product ID.");
     }
 
-    // Find user and update their cart
     const user = await User.findById(userId);
-    user.cart = user.cart.filter(
-      (item) => item.productId.toString() !== productId
+    const cartItem = user.cart.find(
+      (item) => item.productId.toString() === productId
     );
+
+    if (!cartItem) {
+      return res.status(404).send("Product not found in cart.");
+    }
+
+    // Increment quantity and update total amount
+    cartItem.quantity += 1;
+    const product = await Product.findById(productId);
+    cartItem.totalAmount = product.price * cartItem.quantity;
 
     await user.save();
     return res.status(200).json({
-      message: "Product removed from cart successfully.",
+      message: "Product quantity incremented successfully.",
       cart: user.cart,
     });
   } catch (error) {
-    res.status(500).send("Error deleting from cart: ", error.message);
+    res
+      .status(500)
+      .send("Error incrementing quantity in cart: ", error.message);
+  }
+};
+
+const decrementFromCart = async (req, res) => {
+  try {
+    const { userId, productId } = req.body;
+
+    if (!isValidObjectId(userId) || !isValidObjectId(productId)) {
+      return res.status(400).send("Invalid user ID or product ID.");
+    }
+
+    const user = await User.findById(userId);
+    const cartItemIndex = user.cart.findIndex(
+      (item) => item.productId.toString() === productId
+    );
+
+    if (cartItemIndex === -1) {
+      return res.status(404).send("Product not found in cart.");
+    }
+
+    if (user.cart[cartItemIndex].quantity > 1) {
+      // Decrease quantity and update total amount
+      user.cart[cartItemIndex].quantity -= 1;
+      const product = await Product.findById(productId);
+      user.cart[cartItemIndex].totalAmount =
+        product.price * user.cart[cartItemIndex].quantity;
+    } else {
+      // Remove product from cart if quantity is 1
+      user.cart.splice(cartItemIndex, 1);
+    }
+
+    await user.save();
+    return res.status(200).json({
+      message:
+        "Product quantity decremented or removed from cart successfully.",
+      cart: user.cart,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .send("Error decrementing/removing product from cart: ", error.message);
   }
 };
 
@@ -75,19 +124,44 @@ const clearCart = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Validate user ID
     if (!isValidObjectId(userId)) {
       return res.status(400).send("Invalid user ID.");
     }
 
-    // Find user and clear their cart
     const user = await User.findById(userId);
     user.cart = [];
 
     await user.save();
-    res.status(200).json({ message: "Cart cleared", cart: user.cart });
+    return res.status(200).json({ message: "Cart cleared.", cart: user.cart });
   } catch (error) {
     res.status(500).send("Internal Server Error: ", error.message);
+  }
+};
+
+const getCartItems = async (req, res) => {
+  try {
+    const { _id } = req.user;
+
+    if (!isValidObjectId(_id)) {
+      return res.status(400).send("Invalid user ID.");
+    }
+
+    const user = await User.findById(_id).populate("cart.productId");
+
+    if (!user) {
+      return res.status(404).send("User not found.");
+    }
+
+    if (user.cart.length === 0) {
+      return res.status(200).send("Cart is empty.");
+    }
+
+    return res.status(200).json({
+      message: "Cart items retrieved successfully.",
+      cart: user.cart,
+    });
+  } catch (error) {
+    return res.status(500).send("Internal Server Error: ", error.message);
   }
 };
 
@@ -111,4 +185,11 @@ const toggleFavorite = async (req, res) => {
   }
 };
 
-export { addToCart, deleteFromCart, clearCart, toggleFavorite };
+export {
+  addToCart,
+  incrementCartQuantity,
+  decrementFromCart,
+  clearCart,
+  getCartItems,
+  toggleFavorite,
+};
