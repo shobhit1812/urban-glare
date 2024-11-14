@@ -67,8 +67,12 @@ const Navbar: React.FC = () => {
             headers: { Authorization: `Bearer ${user?.token}` },
             withCredentials: true,
           });
-          console.log(response.data.cart.length);
-          setCartItems(response.data.cart.length);
+          const length = response?.data?.cart?.length;
+          if (length === undefined || length === null) {
+            setCartItems(0);
+          } else {
+            setCartItems(length);
+          }
         } catch (error: any) {
           console.log(error.message);
         }
