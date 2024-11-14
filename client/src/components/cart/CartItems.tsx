@@ -10,7 +10,10 @@ interface CartItemsProps {
   setCartItems: (items: CartItem[]) => void;
 }
 
-const CartItems: React.FC<CartItemsProps> = ({ cartItems, setCartItems }) => {
+const CartItems: React.FC<CartItemsProps> = ({
+  cartItems = [],
+  setCartItems,
+}) => {
   const { handleQuantityChange, handleRemoveItem } =
     useCartActions(setCartItems);
 

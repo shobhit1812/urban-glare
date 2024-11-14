@@ -8,15 +8,17 @@ interface CartSummaryProps {
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
-  cartItems,
+  cartItems = [],
   setCartItems,
 }) => {
   const { handleClearCart } = useCartActions(setCartItems);
-  const totalItems = cartItems.reduce((acc, item) => acc + item?.quantity, 0);
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item?.productId?.price * item?.quantity,
-    0
-  );
+  const totalItems =
+    cartItems?.reduce((acc, item) => acc + item?.quantity, 0) || 0;
+  const totalPrice =
+    cartItems?.reduce(
+      (acc, item) => acc + (item?.productId?.price || 0) * item?.quantity,
+      0
+    ) || 0;
 
   return (
     <div className="w-full lg:w-1/3">
