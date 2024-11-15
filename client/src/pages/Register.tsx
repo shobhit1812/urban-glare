@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
-import { addUser } from "@/redux/slices/user.slice";
+import { addUser } from "@/store/slices/user.slice";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";

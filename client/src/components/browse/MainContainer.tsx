@@ -1,12 +1,12 @@
 import axios from "axios";
-import ProductCards from "../ProductCards";
 import { useEffect, useState } from "react";
 import { RootState } from "@/redux/store/store";
-import CustomPagination from "../CustomPagination";
+import ProductCards from "../others/ProductCards";
 import { Product } from "@/helpers/constants/product";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
-import { addProduct } from "@/redux/slices/allProducts.slice";
+import CustomPagination from "../others/CustomPagination";
+import { addProduct } from "@/store/slices/allProducts.slice";
 import ProductCardSkeleton from "../skeleton/ProductCardSkeleton";
 
 const MainContainer: React.FC = () => {

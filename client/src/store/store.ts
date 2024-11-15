@@ -1,8 +1,8 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import userSlice from "../slices/user.slice";
-import allProductSlice from "../slices/allProducts.slice";
-import filteredProductSlice from "../slices/filteredProducts.slice";
-import cartSlice from "../slices/cart.slice";
+import userSlice from "./slices/user.slice";
+import allProductSlice from "./slices/allProducts.slice";
+import filteredProductSlice from "./slices/filteredProducts.slice";
+import cartSlice from "./slices/cart.slice";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage
 import { persistStore, persistReducer } from "redux-persist";
 import {

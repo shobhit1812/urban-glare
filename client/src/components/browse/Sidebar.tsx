@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   addFilteredProduct,
   clearProducts,
-} from "@/redux/slices/filteredProducts.slice";
+} from "@/store/slices/filteredProducts.slice";
 import {
   Accordion,
   AccordionContent,

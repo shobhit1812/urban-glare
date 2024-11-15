@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { User } from "@/helpers/constants/user";
 import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
-import CustomPagination from "../CustomPagination";
+import CustomPagination from "../others/CustomPagination";
 import { BASE_URL } from "@/helpers/constants/server_url";
 
 const Products: React.FC = () => {

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { IoSearchSharp } from "react-icons/io5";
 import { BASE_URL } from "@/helpers/constants/server_url";
-import { addFilteredProduct } from "@/redux/slices/filteredProducts.slice";
+import { addFilteredProduct } from "@/store/slices/filteredProducts.slice";
 
 const SearchBar: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");

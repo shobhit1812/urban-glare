@@ -6,8 +6,8 @@ import { RootState } from "@/redux/store/store";
 import CartItems from "@/components/cart/CartItems";
 import CartSummary from "@/components/cart/CartSummary";
 import { CartItem } from "@/helpers/constants/cartItem";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import LoadingSpinner from "@/components/skeleton/LoadingSpinner";
 
 const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);

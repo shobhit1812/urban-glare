@@ -11,10 +11,10 @@ import { User } from "@/helpers/constants/user";
 import { ThreeDots } from "react-loader-spinner";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { removeUser } from "@/redux/slices/user.slice";
+import { removeUser } from "@/store/slices/user.slice";
 import { BASE_URL } from "@/helpers/constants/server_url";
 // import { fetchCartItems } from "@/redux/slices/cart.slice";
-import { clearProducts } from "@/redux/slices/filteredProducts.slice";
+import { clearProducts } from "@/store/slices/filteredProducts.slice";
 import {
   NavigationMenu,
   NavigationMenuContent,
