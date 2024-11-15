@@ -20,10 +20,12 @@ import authRoutes from "./routes/auth.routes.js";
 import usersRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
+import favoriteRoutes from "./routes/favorite.routes.js";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", usersRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/cart", cartRoutes);
+app.use("/api/v1/favorite", favoriteRoutes);
 
 export default app;

@@ -6,8 +6,9 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 // Lazy load components
-const Login = lazy(() => import("./pages/Login"));
 const Cart = lazy(() => import("./pages/Cart"));
+const Login = lazy(() => import("./pages/Login"));
+const Wishlist = lazy(() => import("./pages/Wishlist"));
 const Register = lazy(() => import("./pages/Register"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Orders = lazy(() => import("./components/admin/Orders"));
@@ -86,6 +87,14 @@ const appRouter = createBrowserRouter([
         element: (
           <LazyLoad>
             <Cart />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "/wishlist",
+        element: (
+          <LazyLoad>
+            <Wishlist />
           </LazyLoad>
         ),
       },

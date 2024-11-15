@@ -1,9 +1,9 @@
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
+import Empty_Cart from "@/assets/empty_cart.webp";
 import QuantityButtonGroup from "./QuantityButtonGroup";
 import { CartItem } from "@/helpers/constants/cartItem";
 import { useCartActions } from "@/helpers/hooks/useCartActions";
-import Empty_Cart from "@/assets/empty_cart.webp";
 
 interface CartItemsProps {
   cartItems: CartItem[];
@@ -30,13 +30,13 @@ const CartItems: React.FC<CartItemsProps> = ({
       ) : (
         cartItems.map((item) => (
           <div
-            key={item._id}
+            key={item?._id}
             className="flex items-center justify-between border-b pb-4 mb-4"
           >
             <div className="flex items-center gap-4">
               <img
-                src={item.productId?.productImages[0] || logo}
-                alt={item.productId?.name}
+                src={item.productId?.productImages?.[0] || logo}
+                alt={item.productId?.name || "Product Image"}
                 className="w-20 h-20 object-cover rounded"
               />
               <div>

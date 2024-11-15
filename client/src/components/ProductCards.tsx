@@ -1,7 +1,9 @@
-import { useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { AiFillStar } from "react-icons/ai";
 import { Product } from "@/helpers/constants/product";
+import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   Card,
@@ -16,6 +18,36 @@ interface CardProps {
 
 const ProductCards: React.FC<CardProps> = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/favorite/get-all-favorites`,
+          {
+            withCredentials: true,
+          }
+        );
+        setIsFavorite(response.data.includes(product._id));
+      } catch (error) {
+        console.error("Error fetching favorites:", error);
+      }
+    };
+    fetchFavorites();
+  }, [product._id]);
+
+  const toggleFavorite = async () => {
+    try {
+      await axios.post(
+        `${BASE_URL}/favorite/toggle-favorites`,
+        { productId: product._id },
+        { withCredentials: true }
+      );
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
 
   // Format price for thousands only
   const formattedPrice =
@@ -34,7 +66,7 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
           />
         </Link>
         <button
-          onClick={() => setIsFavorite(!isFavorite)}
+          onClick={toggleFavorite}
           className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md"
         >
           {isFavorite ? (

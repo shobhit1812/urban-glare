@@ -79,7 +79,33 @@ const Details: React.FC = () => {
       }
     };
     fetchProduct();
+
+    const fetchFavorites = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/favorite/get-all-favorites`,
+          { withCredentials: true }
+        );
+        setIsFavorite(response.data.includes(productId));
+      } catch (error) {
+        console.error("Error fetching favorites:", error);
+      }
+    };
+    fetchFavorites();
   }, [productId]);
+
+  const toggleFavorite = async () => {
+    try {
+      await axios.post(
+        `${BASE_URL}/favorite/toggle-favorites`,
+        { productId },
+        { withCredentials: true }
+      );
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
 
   if (!product) return <ProductDetailsSkeleton />;
 
@@ -121,7 +147,7 @@ const Details: React.FC = () => {
                 </p>
               </div>
               <button
-                onClick={() => setIsFavorite(!isFavorite)}
+                onClick={toggleFavorite}
                 className="bg-white p-2 rounded-full shadow-md"
               >
                 {isFavorite ? (

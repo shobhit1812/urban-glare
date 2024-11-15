@@ -211,26 +211,6 @@ const removeItemFromCart = async (req, res) => {
   }
 };
 
-const toggleFavorite = async (req, res) => {
-  try {
-    const { userId, productId } = req.body;
-
-    const user = await User.findById(userId);
-    const favoriteIndex = user.favorites.indexOf(productId);
-
-    if (favoriteIndex === -1) {
-      user.favorites.push(productId);
-    } else {
-      user.favorites.splice(favoriteIndex, 1);
-    }
-
-    await user.save();
-    return res.status(200).json({ message: "Favorites updated." });
-  } catch (error) {
-    res.status(500).send("Error updating favorites: ", error.message);
-  }
-};
-
 export {
   addToCart,
   incrementCartQuantity,
@@ -238,5 +218,4 @@ export {
   clearCart,
   getCartItems,
   removeItemFromCart,
-  toggleFavorite,
 };
