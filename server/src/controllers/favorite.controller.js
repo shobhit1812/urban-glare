@@ -19,7 +19,7 @@ const toggleFavorite = async (req, res) => {
     }
 
     await user.save();
-    console.log(user.favorites);
+    // console.log(user.favorites);
     return res
       .status(200)
       .json({ message: "Favorites updated.", favorites: user.favorites });
