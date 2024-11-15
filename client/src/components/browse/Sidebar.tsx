@@ -1,6 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
+import { RootState } from "@/redux/store/store";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useDispatch, useSelector } from "react-redux";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  addFilteredProduct,
+  clearProducts,
+} from "@/redux/slices/filteredProducts.slice";
 import {
   Accordion,
   AccordionContent,
@@ -9,110 +18,176 @@ import {
 } from "@/components/ui/accordion";
 
 const Sidebar: React.FC = () => {
+  const dispatch = useDispatch();
+  const allProducts = useSelector((state: RootState) => state.allProduct);
+
+  const [priceOrder, setPriceOrder] = useState<string | null>(null);
+  const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
+
+  // Update filtered products whenever a filter is changed
+  useEffect(() => {
+    applyFilters();
+  }, [
+    priceOrder,
+    selectedGenders,
+    selectedBrands,
+    selectedSizes,
+    selectedRatings,
+  ]);
+
+  const applyFilters = () => {
+    let filteredProducts = [...allProducts];
+
+    if (priceOrder) {
+      filteredProducts.sort((a, b) =>
+        priceOrder === "High to Low" ? b.price - a.price : a.price - b.price
+      );
+    }
+
+    if (selectedGenders.length > 0) {
+      filteredProducts = filteredProducts.filter((product) =>
+        selectedGenders.includes(product.gender)
+      );
+    }
+
+    if (selectedBrands.length > 0) {
+      filteredProducts = filteredProducts.filter((product) =>
+        selectedBrands.includes(product.brand)
+      );
+    }
+
+    if (selectedSizes.length > 0) {
+      filteredProducts = filteredProducts.filter((product) =>
+        product.sizes.some((size) => selectedSizes.includes(size))
+      );
+    }
+
+    if (selectedRatings.length > 0) {
+      filteredProducts = filteredProducts.filter((product) =>
+        selectedRatings.includes(product.rating)
+      );
+    }
+
+    dispatch(addFilteredProduct(filteredProducts));
+  };
+
+  const handleReset = () => {
+    setPriceOrder(null);
+    setSelectedGenders([]);
+    setSelectedBrands([]);
+    setSelectedSizes([]);
+    setSelectedRatings([]);
+    dispatch(clearProducts()); // Clears filtered products
+    dispatch(addFilteredProduct(allProducts)); // Resets to all products
+  };
+
   return (
-    <div>
+    <>
+      {/* Reset Button */}
+      <Button onClick={handleReset} className="mt-3 mb-4 w-full">
+        CLEAR ALL
+      </Button>
+
       <Accordion type="single" collapsible className="w-full">
+        {/* Price Filter */}
         <AccordionItem value="item-1">
-          <AccordionTrigger>Price</AccordionTrigger>
+          <AccordionTrigger>SORT BY PRICE</AccordionTrigger>
           <AccordionContent>
-            <RadioGroup defaultValue="comfortable">
+            <RadioGroup onValueChange={setPriceOrder} value={priceOrder || ""}>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="default" id="r1" />
-                <Label htmlFor="r1">High to Low</Label>
+                <RadioGroupItem value="High to Low" id="high" />
+                <Label htmlFor="high">High to Low</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="comfortable" id="r2" />
-                <Label htmlFor="r2">Low to High</Label>
+                <RadioGroupItem value="Low to High" id="low" />
+                <Label htmlFor="low">Low to High</Label>
               </div>
             </RadioGroup>
           </AccordionContent>
         </AccordionItem>
+
+        {/* Gender Filter */}
         <AccordionItem value="item-2">
-          <AccordionTrigger>Gender</AccordionTrigger>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">male</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">female</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">kids</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">unisex</Label>
-          </AccordionContent>
+          <AccordionTrigger>IDEAL FOR</AccordionTrigger>
+          {["male", "female", "kids", "unisex"].map((gender) => (
+            <AccordionContent key={gender}>
+              <Checkbox
+                checked={selectedGenders.includes(gender)}
+                onCheckedChange={(isChecked) =>
+                  setSelectedGenders((prev) =>
+                    isChecked
+                      ? [...prev, gender]
+                      : prev.filter((g) => g !== gender)
+                  )
+                }
+              />
+              <Label className="pl-2">{gender}</Label>
+            </AccordionContent>
+          ))}
         </AccordionItem>
+
+        {/* Brand Filter */}
         <AccordionItem value="item-3">
-          <AccordionTrigger>Brands</AccordionTrigger>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">Puma</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">Nike</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">Adidas</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">H&M</Label>
-          </AccordionContent>
+          <AccordionTrigger>BRAND</AccordionTrigger>
+          {["Puma", "Nike", "Adidas", "H&M"].map((brand) => (
+            <AccordionContent key={brand}>
+              <Checkbox
+                checked={selectedBrands.includes(brand)}
+                onCheckedChange={(isChecked) =>
+                  setSelectedBrands((prev) =>
+                    isChecked
+                      ? [...prev, brand]
+                      : prev.filter((b) => b !== brand)
+                  )
+                }
+              />
+              <Label className="pl-2">{brand}</Label>
+            </AccordionContent>
+          ))}
         </AccordionItem>
+
+        {/* Size Filter */}
         <AccordionItem value="item-4">
-          <AccordionTrigger>Sizes</AccordionTrigger>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">XS</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">S</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">M</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">L</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">XL</Label>
-          </AccordionContent>
+          <AccordionTrigger>SIZE</AccordionTrigger>
+          {["XS", "S", "M", "L", "XL"].map((size) => (
+            <AccordionContent key={size}>
+              <Checkbox
+                checked={selectedSizes.includes(size)}
+                onCheckedChange={(isChecked) =>
+                  setSelectedSizes((prev) =>
+                    isChecked ? [...prev, size] : prev.filter((s) => s !== size)
+                  )
+                }
+              />
+              <Label className="pl-2">{size}</Label>
+            </AccordionContent>
+          ))}
         </AccordionItem>
+
+        {/* Rating Filter */}
         <AccordionItem value="item-5">
-          <AccordionTrigger>Rating</AccordionTrigger>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">1</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">2</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">3</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">4</Label>
-          </AccordionContent>
-          <AccordionContent>
-            <Checkbox id="terms" />
-            <Label htmlFor="terms">5</Label>
-          </AccordionContent>
+          <AccordionTrigger>RATINGS</AccordionTrigger>
+          {[1, 2, 3, 4, 5].map((rating) => (
+            <AccordionContent key={rating}>
+              <Checkbox
+                checked={selectedRatings.includes(rating)}
+                onCheckedChange={(isChecked) =>
+                  setSelectedRatings((prev) =>
+                    isChecked
+                      ? [...prev, rating]
+                      : prev.filter((r) => r !== rating)
+                  )
+                }
+              />
+              <Label className="pl-2">{rating}</Label>
+            </AccordionContent>
+          ))}
         </AccordionItem>
       </Accordion>
-    </div>
+    </>
   );
 };
 
