@@ -1,10 +1,10 @@
-// import axios from "axios";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { AiFillStar } from "react-icons/ai";
+import { RootState, AppDispatch } from "@/store/store";
 import { Product } from "@/helpers/constants/product";
-// import { BASE_URL } from "@/helpers/constants/server_url";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleFavorite, fetchFavorites } from "@/store/slices/favorite.slice";
+import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   Card,
   CardContent,
@@ -17,38 +17,26 @@ interface CardProps {
 }
 
 const ProductCards: React.FC<CardProps> = ({ product }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const dispatch: AppDispatch = useDispatch(); // Properly type dispatch
+  const { items: favorites } = useSelector(
+    (state: RootState) => state.favorite
+  );
+  const user = useSelector((state: RootState) => state.user); // Get user state
 
-  // useEffect(() => {
-  //   const fetchFavorites = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${BASE_URL}/favorite/get-all-favorites`,
-  //         {
-  //           withCredentials: true,
-  //         }
-  //       );
-  //       setIsFavorite(response.data.includes(product._id));
-  //     } catch (error) {
-  //       console.error("Error fetching favorites:", error);
-  //     }
-  //   };
-  //   fetchFavorites();
-  // }, [product._id]);
+  const isFavorite = favorites.includes(product._id);
 
-  const toggleFavorite = async () => {
-    setIsFavorite(!isFavorite);
-    // try {
-    //   await axios.post(
-    //     `${BASE_URL}/favorite/toggle-favorites`,
-    //     { productId: product._id },
-    //     { withCredentials: true }
-    //   );
-    //   setIsFavorite(!isFavorite);
-    // } catch (error) {
-    //   console.error("Error toggling favorite:", error);
-    // }
+  const toggleFavoriteHandler = () => {
+    if (user?._id) {
+      dispatch(toggleFavorite(product._id));
+    }
   };
+
+  useEffect(() => {
+    // Fetch favorites only if a user is logged in
+    if (user?._id && favorites.length === 0) {
+      dispatch(fetchFavorites(user?._id));
+    }
+  }, [dispatch, user, favorites]);
 
   // Format price for thousands only
   const formattedPrice =
@@ -67,7 +55,7 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
           />
         </Link>
         <button
-          onClick={toggleFavorite}
+          onClick={toggleFavoriteHandler}
           className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md"
         >
           {isFavorite ? (
