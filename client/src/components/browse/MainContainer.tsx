@@ -1,6 +1,6 @@
 import axios from "axios";
+import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
-import { RootState } from "@/redux/store/store";
 import ProductCards from "../others/ProductCards";
 import { Product } from "@/helpers/constants/product";
 import { useDispatch, useSelector } from "react-redux";

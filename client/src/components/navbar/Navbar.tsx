@@ -3,10 +3,10 @@ import axios from "axios";
 import SearchBar from "./SearchBar";
 import logo from "@/assets/logo.png";
 import { toast } from "react-toastify";
+import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
-import { RootState } from "@/redux/store/store";
 import { User } from "@/helpers/constants/user";
 import { ThreeDots } from "react-loader-spinner";
 import { useNavigate, Link } from "react-router-dom";
@@ -63,18 +63,25 @@ const Navbar: React.FC = () => {
     const timer = setTimeout(() => {
       const fetchCartLength = async () => {
         try {
-          const response = await axios.get(`${BASE_URL}/cart/get-cart-items`, {
-            headers: { Authorization: `Bearer ${user?.token}` },
-            withCredentials: true,
-          });
-          const length = response?.data?.cart?.length;
-          if (length === undefined || length === null) {
-            setCartItems(0);
+          if (user) {
+            const response = await axios.get(
+              `${BASE_URL}/cart/get-cart-items`,
+              {
+                headers: { Authorization: `Bearer ${user?.token}` },
+                withCredentials: true,
+              }
+            );
+            const length = response?.data?.cart?.length;
+            if (length === undefined || length === null) {
+              setCartItems(0);
+            } else {
+              setCartItems(length);
+            }
           } else {
-            setCartItems(length);
+            return null;
           }
         } catch (error: any) {
-          console.log(error.message);
+          console.log("Cannot fetch response: ", error.message);
         }
       };
       fetchCartLength();
@@ -104,7 +111,7 @@ const Navbar: React.FC = () => {
         draggable: true,
       });
     } catch (error: any) {
-      console.error("Error logging out:", error.message);
+      console.error("Error logging out: ", error.message);
     } finally {
       setLoading(false);
     }

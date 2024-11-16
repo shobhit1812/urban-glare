@@ -1,11 +1,11 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { User } from "@/helpers/constants/user";
 import { Button } from "@/components/ui/button";
-import { RootState } from "@/redux/store/store";
 import { ThreeDots } from "react-loader-spinner";
 import { Product } from "@/helpers/constants/product";
 import { BASE_URL } from "@/helpers/constants/server_url";
@@ -80,31 +80,32 @@ const Details: React.FC = () => {
     };
     fetchProduct();
 
-    const fetchFavorites = async () => {
-      try {
-        const response = await axios.get(
-          `${BASE_URL}/favorite/get-all-favorites`,
-          { withCredentials: true }
-        );
-        setIsFavorite(response.data.includes(productId));
-      } catch (error) {
-        console.error("Error fetching favorites:", error);
-      }
-    };
-    fetchFavorites();
+    // const fetchFavorites = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       `${BASE_URL}/favorite/get-all-favorites`,
+    //       { withCredentials: true }
+    //     );
+    //     setIsFavorite(response.data.includes(productId));
+    //   } catch (error: any) {
+    //     console.error("Error fetching favorites:", error.message);
+    //   }
+    // };
+    // fetchFavorites();
   }, [productId]);
 
   const toggleFavorite = async () => {
-    try {
-      await axios.post(
-        `${BASE_URL}/favorite/toggle-favorites`,
-        { productId },
-        { withCredentials: true }
-      );
-      setIsFavorite(!isFavorite);
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    }
+    setIsFavorite(!isFavorite);
+    // try {
+    //   await axios.post(
+    //     `${BASE_URL}/favorite/toggle-favorites`,
+    //     { productId },
+    //     { withCredentials: true }
+    //   );
+    //   setIsFavorite(!isFavorite);
+    // } catch (error) {
+    //   console.error("Error toggling favorite:", error);
+    // }
   };
 
   if (!product) return <ProductDetailsSkeleton />;
