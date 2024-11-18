@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CartItem } from "@/helpers/constants/cartItem";
 import { useCartActions } from "@/helpers/hooks/useCartActions";
@@ -29,9 +30,11 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         <Button className="w-full py-3 mt-4 text-lg" onClick={handleClearCart}>
           Clear Cart
         </Button>
-        <Button className="w-full py-3 mt-4 text-lg bg-green-500 hover:bg-green-600">
-          Proceed to Payment
-        </Button>
+        <Link to="/checkout">
+          <Button className="w-full py-3 mt-4 text-lg bg-green-500 hover:bg-green-600">
+            Proceed to Payment
+          </Button>
+        </Link>
       </div>
     </div>
   );

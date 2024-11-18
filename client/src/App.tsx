@@ -10,6 +10,7 @@ const Cart = lazy(() => import("./pages/Cart"));
 const Login = lazy(() => import("./pages/Login"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
 const Register = lazy(() => import("./pages/Register"));
+const Checkout = lazy(() => import("./pages/Checkout"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Orders = lazy(() => import("./components/admin/Orders"));
 const Clients = lazy(() => import("./components/admin/Clients"));
@@ -95,6 +96,14 @@ const appRouter = createBrowserRouter([
         element: (
           <LazyLoad>
             <Wishlist />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "/checkout",
+        element: (
+          <LazyLoad>
+            <Checkout />
           </LazyLoad>
         ),
       },

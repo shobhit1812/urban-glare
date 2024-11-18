@@ -1,10 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
 import { AiOutlineClose } from "react-icons/ai";
 import { User } from "@/helpers/constants/user";
@@ -40,11 +40,11 @@ const CreateProduct: React.FC = () => {
   const [errors, setErrors] = useState<string>("");
 
   const navigate = useNavigate();
-  const user: User = useSelector((state: RootState) => state.user);
+  const user: User | null = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     // Redirect if user is not admin
-    if (!user.isAdmin) {
+    if (!user?.isAdmin) {
       navigate("/");
     }
   }, [user, navigate]);
