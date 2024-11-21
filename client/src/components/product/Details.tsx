@@ -3,12 +3,12 @@ import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { User } from "@/helpers/constants/user";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
 import { Product } from "@/helpers/constants/product";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { useParams, useNavigate } from "react-router-dom";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import ProductDetailsSkeleton from "@/components/skeleton/ProductDetailsSkeleton";
 import {
@@ -27,6 +27,8 @@ const Details: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const user: User = useSelector((state: RootState) => state.user);
+
+  const navigate = useNavigate();
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -51,6 +53,7 @@ const Details: React.FC = () => {
           },
         }
       );
+      navigate("/cart");
     } catch (error: any) {
       console.error("Error adding to cart:", error.message);
       toast.error("Error adding to cart.", {
