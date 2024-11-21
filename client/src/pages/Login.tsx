@@ -1,5 +1,7 @@
-import axios from "axios";
 import logo from "../assets/logo.png";
+import axios, { AxiosResponse } from "axios";
+import User from "@/interfaces/user.interface";
+
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
@@ -7,18 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
 import { addUser } from "@/store/slices/user.slice";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
-interface LoginData {
-  email: string;
-  password: string;
-}
-
 const Login: React.FC = () => {
-  const [formData, setFormData] = useState<LoginData>({
+  const [formData, setFormData] = useState<User>({
     email: "",
     password: "",
   });
@@ -32,8 +29,7 @@ const Login: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    // Redirect if user is already logged in
-    if (user) {
+    if (user && user._id) {
       navigate("/");
     }
   }, [user, navigate]);
@@ -48,15 +44,23 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${BASE_URL}/auth/login`, formData, {
-        withCredentials: true,
-      });
-      const { user } = response.data;
-      dispatch(addUser(user));
+      const response: AxiosResponse<{ user: User }> = await axios.post(
+        `${BASE_URL}/auth/login`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(addUser(response.data.user));
       navigate("/");
-    } catch (error: any) {
-      const errorMessage = error.response.data;
-      setErrors(errorMessage.replace("Internal Server Error: ", ""));
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage = error.response.data || "Something went wrong";
+        setErrors(errorMessage);
+      } else {
+        console.error("An unexpected error occurred.");
+        setErrors("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -64,7 +68,6 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center pt-6">
-      {/* Logo above the sign-in form */}
       <Link to="/">
         <img src={logo} alt="Logo" className="w-36 h-24 mb-4" />
       </Link>

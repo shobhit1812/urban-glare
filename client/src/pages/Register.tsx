@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "axios";
 import logo from "../assets/logo.png";
+import axios, { AxiosResponse } from "axios";
+import User from "@/interfaces/user.interface";
+
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
@@ -13,14 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
-interface RegisterData {
-  fullName: string;
-  email: string;
-  password: string;
-}
-
 const Register: React.FC = () => {
-  const [formData, setFormData] = useState<RegisterData>({
+  const [formData, setFormData] = useState<User>({
     fullName: "",
     email: "",
     password: "",
@@ -36,7 +31,7 @@ const Register: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    if (user) {
+    if (user && user._id) {
       navigate("/");
     }
   }, [user, navigate]);
@@ -51,15 +46,23 @@ const Register: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${BASE_URL}/auth/register`, formData, {
-        withCredentials: true,
-      });
-      const { user } = response.data;
-      dispatch(addUser(user));
+      const response: AxiosResponse<{ user: User }> = await axios.post(
+        `${BASE_URL}/auth/register`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(addUser(response.data.user));
       navigate("/");
-    } catch (error: any) {
-      const errorMessage = error.response.data;
-      setErrors(errorMessage.replace("Internal Server Error: ", ""));
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage = error.response.data || "Something went wrong";
+        setErrors(errorMessage);
+      } else {
+        console.error("An unexpected error occurred.");
+        setErrors("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
