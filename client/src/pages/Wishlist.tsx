@@ -1,20 +1,13 @@
 import axios from "axios";
+import Product from "@/interfaces/product.interface";
+
 import { AiFillStar } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BASE_URL } from "@/helpers/constants/server_url";
 
-interface WishlistItem {
-  _id: string;
-  name: string;
-  brand: string;
-  price: number;
-  productImages: string[];
-  rating: number;
-}
-
 const Wishlist: React.FC = () => {
-  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [wishlist, setWishlist] = useState<Product[]>([]);
 
   const fetchFavorites = async () => {
     try {

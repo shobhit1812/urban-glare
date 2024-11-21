@@ -1,8 +1,10 @@
 import { Outlet } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+
 import Footer from "@/components/others/Footer";
 import Navbar from "@/components/navbar/Navbar";
-import { ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const Home: React.FC = () => {
   return (

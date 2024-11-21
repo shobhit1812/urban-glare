@@ -1,6 +1,7 @@
 import logo from "../assets/logo.png";
 import axios, { AxiosResponse } from "axios";
 import User from "@/interfaces/user.interface";
+import RegisterFormData from "@/interfaces/register.interface";
 
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
@@ -15,7 +16,7 @@ import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Register: React.FC = () => {
-  const [formData, setFormData] = useState<User>({
+  const [formData, setFormData] = useState<RegisterFormData>({
     fullName: "",
     email: "",
     password: "",
@@ -28,7 +29,7 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const user = useSelector((state: RootState) => state.user);
+  const user: User = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (user && user._id) {

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
-const useOnline = () => {
+const useOnline: () => boolean = () => {
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
   useEffect(() => {
-    const handleOnline = () => {
+    const handleOnline: () => void = () => {
       setIsOnline(true);
     };
 
-    const handleOffline = () => {
+    const handleOffline: () => void = () => {
       setIsOnline(false);
     };
 

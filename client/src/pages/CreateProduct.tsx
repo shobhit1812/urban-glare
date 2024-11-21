@@ -1,4 +1,6 @@
 import axios from "axios";
+import User from "@/interfaces/user.interface";
+
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -7,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { AiOutlineClose } from "react-icons/ai";
-import { User } from "@/helpers/constants/user";
 import { ThreeDots } from "react-loader-spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,8 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const genderOptions = ["male", "female", "kids", "unisex"];
-const sizeOptions = ["XS", "S", "M", "L", "XL"];
+const genderOptions: string[] = ["male", "female", "kids", "unisex"];
+const sizeOptions: string[] = ["XS", "S", "M", "L", "XL"];
 
 const CreateProduct: React.FC = () => {
   const [productData, setProductData] = useState({
@@ -36,11 +37,10 @@ const CreateProduct: React.FC = () => {
   });
   const [productImages, setProductImages] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const user: User | null = useSelector((state: RootState) => state.user);
+  const user: User = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     // Redirect if user is not admin
@@ -114,9 +114,10 @@ const CreateProduct: React.FC = () => {
         autoClose: 5000,
         draggable: true,
       });
-    } catch (error: any) {
-      const errorMessage = error.response.data;
-      setErrors(errorMessage.replace("Internal Server Error: ", ""));
+    } catch (error: unknown) {
+      console.log("Error: ", error);
+      // const errorMessage = error.response.data;
+      // setErrors(errorMessage.replace("Internal Server Error: ", ""));
     } finally {
       setLoading(false);
     }
@@ -259,8 +260,6 @@ const CreateProduct: React.FC = () => {
             ))}
           </div>
         </div>
-
-        {errors && <p className="text-red-500 text-lg mt-1">{errors}</p>}
 
         {/* Submit Button */}
         <div>

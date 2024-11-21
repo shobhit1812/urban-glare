@@ -1,7 +1,8 @@
+import User from "@/interfaces/user.interface";
+
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { User } from "@/helpers/constants/user";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 
 const Dashboard: React.FC = () => {

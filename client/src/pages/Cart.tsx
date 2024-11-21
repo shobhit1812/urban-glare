@@ -1,18 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
+import User from "@/interfaces/user.interface";
+import CartItem from "@/interfaces/cart.interface";
+import CartItems from "@/components/cart/CartItems";
+import CartSummary from "@/components/cart/CartSummary";
+import LoadingSpinner from "@/components/skeleton/LoadingSpinner";
+
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import CartItems from "@/components/cart/CartItems";
-import CartSummary from "@/components/cart/CartSummary";
-import { CartItem } from "@/helpers/constants/cartItem";
 import { BASE_URL } from "@/helpers/constants/server_url";
-import LoadingSpinner from "@/components/skeleton/LoadingSpinner";
 
 const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const user = useSelector((state: RootState) => state.user);
+
+  const user: User = useSelector((state: RootState) => state.user);
 
   const fetchCartItems = async () => {
     setLoading(true);
@@ -27,9 +30,9 @@ const Cart: React.FC = () => {
           withCredentials: true,
         }
       );
-      setCartItems(response?.data?.cart);
-    } catch (error: any) {
-      console.error("Error fetching cart items:", error.message);
+      setCartItems(response.data.cart);
+    } catch (error: unknown) {
+      console.error("Error fetching cart items: ", error);
     } finally {
       setLoading(false);
     }

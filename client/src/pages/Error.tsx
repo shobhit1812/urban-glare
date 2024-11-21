@@ -10,6 +10,9 @@ const Error: React.FC = () => {
       <div className="flex flex-col items-center justify-center h-screen">
         <h1 className="text-4xl font-bold text-red-600">Oops!</h1>
         <p className="text-lg mt-4">An unexpected error occurred.</p>
+        <Link to="/" className="mt-4 text-blue-500 underline">
+          Go Back Home
+        </Link>
       </div>
     );
   }
@@ -24,9 +27,9 @@ const Error: React.FC = () => {
       <p className="text-lg mt-4 mb-4">
         Sorry, something went wrong. Please try again later.
       </p>
-      <Button>
-        <Link to="/">Home</Link>
-      </Button>
+      <Link to="/">
+        <Button>Home</Button>
+      </Link>
     </div>
   );
 };

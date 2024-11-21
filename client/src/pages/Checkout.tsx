@@ -1,9 +1,3 @@
-const Checkout: React.FC = () => {
-  return (
-    <div>
-      <h1>Checkout</h1>
-    </div>
-  );
-};
+const Checkout: React.FC = () => <h1>Checkout</h1>;
 
 export default Checkout;

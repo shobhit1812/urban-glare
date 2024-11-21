@@ -1,9 +1,9 @@
 import Product from "./product.interface";
 
 interface CartItem {
-  productId?: Product;
-  quantity?: number;
-  _id?: string;
+  _id: string;
+  productId: Product;
+  quantity: number;
 }
 
 export default CartItem;
