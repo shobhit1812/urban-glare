@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
+import { RootState } from "@/store/store";
 import { User } from "@/helpers/constants/user";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const user: User = useSelector((state: RootState) => state.user);
+  const user: User | null = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     // Redirect if user is not admin

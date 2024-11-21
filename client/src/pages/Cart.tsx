@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
+import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { RootState } from "@/redux/store/store";
 import CartItems from "@/components/cart/CartItems";
 import CartSummary from "@/components/cart/CartSummary";
 import { CartItem } from "@/helpers/constants/cartItem";
