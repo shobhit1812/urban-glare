@@ -4,6 +4,7 @@ import Error from "./pages/Error";
 import Browse from "./pages/Browse";
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import LoadingFallback from "./components/others/LoadingFallback";
 
 // Lazy load components
 const Cart = lazy(() => import("./pages/Cart"));
@@ -19,8 +20,8 @@ const Products = lazy(() => import("./components/admin/Products"));
 const ProductDetails = lazy(() => import("./pages/ProductDetails"));
 
 // Reusable component for loading lazy components with fallback
-const LazyLoad = ({ children }: { children: React.ReactNode }) => (
-  <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+const LazyLoad: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <Suspense fallback={<LoadingFallback />}>{children}</Suspense>
 );
 
 const appRouter = createBrowserRouter([
@@ -76,7 +77,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "/:productName/:productBrand/:productId",
+        path: ":productName/:productBrand/:productId",
         element: (
           <LazyLoad>
             <ProductDetails />
@@ -84,7 +85,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "/cart",
+        path: "cart",
         element: (
           <LazyLoad>
             <Cart />
@@ -92,7 +93,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "/wishlist",
+        path: "wishlist",
         element: (
           <LazyLoad>
             <Wishlist />
@@ -100,7 +101,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "/checkout",
+        path: "checkout",
         element: (
           <LazyLoad>
             <Checkout />
@@ -110,7 +111,7 @@ const appRouter = createBrowserRouter([
     ],
   },
   {
-    path: "/auth/register",
+    path: "auth/register",
     element: (
       <LazyLoad>
         <Register />
@@ -118,7 +119,7 @@ const appRouter = createBrowserRouter([
     ),
   },
   {
-    path: "/auth/login",
+    path: "auth/login",
     element: (
       <LazyLoad>
         <Login />
