@@ -1,13 +1,14 @@
 import axios from "axios";
+import ProductCards from "../others/ProductCards";
+import Product from "@/interfaces/product.interface";
+import CustomPagination from "../others/CustomPagination";
+import ProductCardSkeleton from "../skeleton/ProductCardSkeleton";
+
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
-import ProductCards from "../others/ProductCards";
-import { Product } from "@/helpers/constants/product";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
-import CustomPagination from "../others/CustomPagination";
 import { addProduct } from "@/store/slices/allProducts.slice";
-import ProductCardSkeleton from "../skeleton/ProductCardSkeleton";
 
 const MainContainer: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -15,13 +16,15 @@ const MainContainer: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
 
   const dispatch = useDispatch();
-  const allProducts = useSelector((state: RootState) => state.allProduct);
-  const filteredProducts = useSelector(
+  const allProducts: Product[] = useSelector(
+    (state: RootState) => state.allProduct
+  );
+  const filteredProducts: Product[] = useSelector(
     (state: RootState) => state.filteredProduct
   );
 
-  const isFiltered = filteredProducts.length > 0;
-  const productsToDisplay =
+  const isFiltered: boolean = filteredProducts.length > 0;
+  const productsToDisplay: Product[] =
     isFiltered && filteredProducts ? filteredProducts : allProducts ?? [];
 
   useEffect(() => {
@@ -41,8 +44,8 @@ const MainContainer: React.FC = () => {
         const data = response.data.products;
         dispatch(addProduct(data));
         setTotalPages(response.data.totalPages);
-      } catch (error: any) {
-        console.error("Error while fetching products:", error.message);
+      } catch (error: unknown) {
+        console.error("Error While Fetching Products: ", error);
       } finally {
         setLoading(false);
       }

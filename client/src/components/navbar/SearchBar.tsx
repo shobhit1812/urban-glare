@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,7 @@ import { addFilteredProduct } from "@/store/slices/filteredProducts.slice";
 
 const SearchBar: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
+
   const dispatch = useDispatch();
 
   const fetchFilteredProducts = async (searchText: string) => {
@@ -21,8 +23,8 @@ const SearchBar: React.FC = () => {
       );
       const filteredData = response.data.products;
       dispatch(addFilteredProduct(filteredData));
-    } catch (error: any) {
-      console.log("Cannot fetch data: ", error.message);
+    } catch (error: unknown) {
+      console.log("Cannot fetch data: ", error);
     }
   };
 

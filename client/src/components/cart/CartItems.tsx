@@ -1,8 +1,9 @@
 import logo from "@/assets/logo.png";
-import { Button } from "@/components/ui/button";
 import Empty_Cart from "@/assets/empty_cart.webp";
+import CartItem from "@/interfaces/cart.interface";
 import QuantityButtonGroup from "./QuantityButtonGroup";
-import { CartItem } from "@/helpers/constants/cartItem";
+
+import { Button } from "@/components/ui/button";
 import { useCartActions } from "@/helpers/hooks/useCartActions";
 
 interface CartItemsProps {

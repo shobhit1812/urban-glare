@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import Product from "@/interfaces/product.interface";
+
+import { RootState } from "@/store/store";
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
-import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +21,9 @@ import {
 
 const Sidebar: React.FC = () => {
   const dispatch = useDispatch();
-  const allProducts = useSelector((state: RootState) => state.allProduct);
+  const allProducts: Product[] = useSelector(
+    (state: RootState) => state.allProduct
+  );
 
   const [priceOrder, setPriceOrder] = useState<string | null>(null);
   const [selectedGenders, setSelectedGenders] = useState<string[]>([]);

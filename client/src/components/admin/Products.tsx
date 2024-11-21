@@ -1,17 +1,19 @@
 import axios from "axios";
+import User from "@/interfaces/user.interface";
+import Product from "@/interfaces/product.interface";
+import CustomPagination from "../others/CustomPagination";
+
 import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "@/helpers/constants/user";
-import { RootState } from "@/redux/store/store";
 import { Button } from "@/components/ui/button";
-import CustomPagination from "../others/CustomPagination";
 import { BASE_URL } from "@/helpers/constants/server_url";
 
 const Products: React.FC = () => {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
@@ -28,7 +30,6 @@ const Products: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
-      setError(null);
 
       try {
         const response = await axios.get(
@@ -43,16 +44,16 @@ const Products: React.FC = () => {
         );
         setProducts(response.data.products);
         setTotalPages(response.data.totalPages);
-      } catch (error: any) {
+      } catch (error: unknown) {
         setError("Failed to load products.");
-        console.log(error.message);
+        console.log(error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [user?.token, page]);
+  }, [user.token, page]);
 
   return (
     <div>

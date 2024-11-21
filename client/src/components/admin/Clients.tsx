@@ -1,22 +1,23 @@
 import axios from "axios";
+import User from "@/interfaces/user.interface";
+
+import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "@/helpers/constants/user";
-import { RootState } from "@/redux/store/store";
 import { BASE_URL } from "@/helpers/constants/server_url";
 
 const Clients: React.FC = () => {
-  const [clients, setClients] = useState<any[]>([]);
+  const [clients, setClients] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>("");
 
   const navigate = useNavigate();
   const user: User = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     // Redirect if user is not admin
-    if (!user?.isAdmin) {
+    if (!user.isAdmin) {
       navigate("/");
     }
   }, [user, navigate]);
@@ -24,7 +25,6 @@ const Clients: React.FC = () => {
   useEffect(() => {
     const fetchClients = async () => {
       setLoading(true);
-      setError(null);
 
       try {
         const response = await axios.get(`${BASE_URL}/user/get-all-users`, {
@@ -33,9 +33,9 @@ const Clients: React.FC = () => {
           },
         });
         setClients(response.data.users);
-      } catch (error: any) {
-        setError("Failed to load clients");
-        console.log(error.message);
+      } catch (error: unknown) {
+        setError("Failed to load clients.");
+        console.log(error);
       } finally {
         setLoading(false);
       }

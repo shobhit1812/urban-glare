@@ -1,6 +1,7 @@
+import CartItem from "@/interfaces/cart.interface";
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { CartItem } from "@/helpers/constants/cartItem";
 import { useCartActions } from "@/helpers/hooks/useCartActions";
 
 interface CartSummaryProps {

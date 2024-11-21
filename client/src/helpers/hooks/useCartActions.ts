@@ -1,12 +1,14 @@
 import axios from "axios";
-import { useSelector } from "react-redux";
+import User from "@/interfaces/user.interface";
+import CartItem from "@/interfaces/cart.interface";
+
 import { useState } from "react";
-import { CartItem } from "@/helpers/constants/cartItem";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 import { BASE_URL } from "@/helpers/constants/server_url";
-import { RootState } from "@/redux/store/store";
 
 export const useCartActions = (setCartItems: (items: CartItem[]) => void) => {
-  const user = useSelector((state: RootState) => state.user);
+  const user: User = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(false);
 
   const fetchHeaders = () => ({
@@ -21,6 +23,7 @@ export const useCartActions = (setCartItems: (items: CartItem[]) => void) => {
     increment: boolean
   ) => {
     try {
+      setLoading(true);
       const response = await axios.patch(
         `${BASE_URL}/cart/${
           increment ? "increment-cart-quantity" : "decrement-from-cart"
@@ -29,8 +32,10 @@ export const useCartActions = (setCartItems: (items: CartItem[]) => void) => {
         fetchHeaders()
       );
       setCartItems(response?.data?.cart);
-    } catch (error) {
-      console.error("Error updating quantity:", error.message);
+    } catch (error: unknown) {
+      console.error("Error while updating quantity: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,8 +48,8 @@ export const useCartActions = (setCartItems: (items: CartItem[]) => void) => {
       setCartItems((prev) =>
         prev.filter((item) => item?.productId?._id !== productId)
       );
-    } catch (error) {
-      console.error("Error removing item from cart:", error.message);
+    } catch (error: unknown) {
+      console.error("Error while removing item from cart: ", error);
     }
   };
 
@@ -52,8 +57,8 @@ export const useCartActions = (setCartItems: (items: CartItem[]) => void) => {
     try {
       await axios.delete(`${BASE_URL}/cart/clear-cart`, fetchHeaders());
       setCartItems([]);
-    } catch (error: any) {
-      console.error("Error clearing cart:", error.message);
+    } catch (error: unknown) {
+      console.error("Error while clearing cart: ", error);
     }
   };
 

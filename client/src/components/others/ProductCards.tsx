@@ -1,7 +1,9 @@
+import User from "@/interfaces/user.interface";
+import Product from "@/interfaces/product.interface";
+
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { RootState, AppDispatch } from "@/store/store";
-import { Product } from "@/helpers/constants/product";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleFavorite, fetchFavorites } from "@/store/slices/favorite.slice";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
@@ -21,9 +23,9 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
   const { items: favorites } = useSelector(
     (state: RootState) => state.favorite
   );
-  const user = useSelector((state: RootState) => state.user); // Get user state
+  const user: User = useSelector((state: RootState) => state.user);
 
-  const isFavorite = favorites.includes(product._id);
+  const isFavorite: boolean = favorites.includes(product._id);
 
   const toggleFavoriteHandler = () => {
     if (user?._id) {

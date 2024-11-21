@@ -2,18 +2,18 @@
 import axios from "axios";
 import SearchBar from "./SearchBar";
 import logo from "@/assets/logo.png";
+import User from "@/interfaces/user.interface";
+
 import { toast } from "react-toastify";
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
-import { User } from "@/helpers/constants/user";
 import { ThreeDots } from "react-loader-spinner";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "@/store/slices/user.slice";
 import { BASE_URL } from "@/helpers/constants/server_url";
-// import { fetchCartItems } from "@/redux/slices/cart.slice";
 import { clearProducts } from "@/store/slices/filteredProducts.slice";
 import {
   NavigationMenu,
@@ -53,7 +53,6 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const user: User | null = useSelector((state: RootState) => state.user);
-  // const cartItems = useSelector((state: RootState) => state.cart?.itemsCount);
 
   const handleLogoClick = () => {
     dispatch(clearProducts());
@@ -71,7 +70,7 @@ const Navbar: React.FC = () => {
                 withCredentials: true,
               }
             );
-            const length = response?.data?.cart?.length;
+            const length = response.data.cart?.length;
             if (length === undefined || length === null) {
               setCartItems(0);
             } else {
@@ -102,7 +101,7 @@ const Navbar: React.FC = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      dispatch(removeUser({}));
+      dispatch(removeUser());
       navigate("/");
       toast.success("Successfully logout!!!", {
         position: "bottom-right",
@@ -111,7 +110,7 @@ const Navbar: React.FC = () => {
         draggable: true,
       });
     } catch (error: any) {
-      console.error("Error logging out: ", error.message);
+      console.error("Error while logging out: ", error.message);
     } finally {
       setLoading(false);
     }

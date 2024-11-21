@@ -1,16 +1,17 @@
 import axios from "axios";
+import User from "@/interfaces/user.interface";
+import Product from "@/interfaces/product.interface";
+import ProductDetailsSkeleton from "@/components/skeleton/ProductDetailsSkeleton";
+
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
-import User from "@/interfaces/user.interface";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
-import Product from "@/interfaces/product.interface";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { useParams, useNavigate } from "react-router-dom";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import ProductDetailsSkeleton from "@/components/skeleton/ProductDetailsSkeleton";
 import {
   Carousel,
   CarouselContent,
@@ -20,11 +21,12 @@ import {
 } from "@/components/ui/carousel";
 
 const Details: React.FC = () => {
-  const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const { productId } = useParams<{ productId: string }>();
 
   const user: User = useSelector((state: RootState) => state.user);
 
@@ -54,8 +56,8 @@ const Details: React.FC = () => {
         }
       );
       navigate("/cart");
-    } catch (error: any) {
-      console.error("Error adding to cart:", error.message);
+    } catch (error: unknown) {
+      console.error("Error adding to cart: ", error);
       toast.error("Error adding to cart.", {
         position: "bottom-right",
         theme: "dark",
@@ -77,8 +79,8 @@ const Details: React.FC = () => {
           }
         );
         setProduct(response.data.product);
-      } catch (error: any) {
-        console.error("Error fetching product details:", error.message);
+      } catch (error: unknown) {
+        console.error("Error fetching product details: ", error);
       }
     };
     fetchProduct();
