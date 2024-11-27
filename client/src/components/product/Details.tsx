@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
 import { BASE_URL } from "@/helpers/constants/server_url";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   Carousel,
@@ -152,16 +152,18 @@ const Details: React.FC = () => {
                   {product.brand}
                 </p>
               </div>
-              <button
-                onClick={toggleFavorite}
-                className="bg-white p-2 rounded-full shadow-md"
-              >
-                {isFavorite ? (
-                  <AiFillHeart className="text-red-500" size={24} />
-                ) : (
-                  <AiOutlineHeart size={24} />
-                )}
-              </button>
+              {!user?.isAdmin && (
+                <button
+                  onClick={toggleFavorite}
+                  className="bg-white p-2 rounded-full shadow-md"
+                >
+                  {isFavorite ? (
+                    <AiFillHeart className="text-red-500" size={24} />
+                  ) : (
+                    <AiOutlineHeart size={24} />
+                  )}
+                </button>
+              )}
             </div>
 
             <div className="flex items-center mt-2 mb-4">
@@ -214,7 +216,7 @@ const Details: React.FC = () => {
               </Button>
             ) : (
               <Button className="w-full bg-yellow-500 hover:bg-yellow-600 py-3 rounded-lg text-lg">
-                Edit Product
+                <Link to={`/edit-product/${product?._id}`}>Edit Product</Link>
               </Button>
             )}
           </div>

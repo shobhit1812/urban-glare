@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 
 const getAllUsers = async (_, res) => {
   try {
-    const users = await User.find({}).select("_id fullName email");
+    const users = await User.find({}).select("fullName email");
 
     return res.status(200).json({
       message: "Users fetched successfully.",

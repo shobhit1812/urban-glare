@@ -3,11 +3,12 @@ import User from "@/interfaces/user.interface";
 import Product from "@/interfaces/product.interface";
 import CustomPagination from "../others/CustomPagination";
 
+import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useNavigate, Link } from "react-router-dom";
 import { BASE_URL } from "@/helpers/constants/server_url";
 
 const Products: React.FC = () => {
@@ -55,6 +56,37 @@ const Products: React.FC = () => {
     fetchProducts();
   }, [user.token, page]);
 
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      setLoading(true);
+
+      await axios.delete(`${BASE_URL}/product/delete-product/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product._id !== productId)
+      );
+      toast.success("Product deleted successfully!", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("Error deleting product.", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <div>
@@ -89,11 +121,12 @@ const Products: React.FC = () => {
                     <td className="p-2 sm:p-4">${product.price}</td>
                     <td className="p-2 sm:p-4 space-x-2">
                       <Button className="bg-yellow-500 hover:bg-yellow-600 text-xs sm:text-sm">
-                        Edit
+                        <Link to={`/edit-product/${product?._id}`}>Edit</Link>
                       </Button>
                       <Button
                         variant="destructive"
                         className="text-xs sm:text-sm"
+                        onClick={() => handleDeleteProduct(product?._id)}
                       >
                         Delete
                       </Button>

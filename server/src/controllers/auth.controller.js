@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 // import sendWelcomeEmail from "../utils/sendWelcomeEmail.js";
-import { validateLoginUser, validateRegisterUser } from "../utils/validator.js";
+import { validateRegisterUser, validateLoginUser } from "../utils/validator.js";
 
 const registerUser = async (req, res) => {
   try {

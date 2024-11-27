@@ -1,7 +1,15 @@
 import mongoose from "mongoose";
+import { v2 as cloudinary } from "cloudinary";
 import Product from "../models/product.model.js";
 import { validateProduct } from "../utils/validator.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
+
+const extractPublicId = (url) => {
+  const parts = url.split("/");
+  const fileNameWithExtension = parts[parts.length - 1]; // e.g., "sample.jpg"
+  const [publicId] = fileNameWithExtension.split("."); // Split by "." to remove file extension
+  return publicId;
+};
 
 const createProduct = async (req, res) => {
   try {
@@ -10,6 +18,7 @@ const createProduct = async (req, res) => {
     const { name, description, price, brand, rating, gender, sizes } = req.body;
 
     const existedProduct = await Product.findOne({ name });
+
     if (existedProduct) {
       return res.status(409).send("Product already exists.");
     }
@@ -49,13 +58,117 @@ const createProduct = async (req, res) => {
   }
 };
 
-// const updateProduct = async (req, res) => {
-//   try {
-//     const { productId } = req.params;
-//   } catch (error) {
-//     res.status(500).send("Internal Server Error: " + error.message);
-//   }
-// };
+const editProduct = async (req, res) => {
+  try {
+    const { isAdmin } = req.user;
+
+    if (!isAdmin) {
+      return res
+        .status(403)
+        .send("You are not authorized to edit this product.");
+    }
+
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).send("Product not found.");
+    }
+
+    const { name, description, price, brand, rating, gender, sizes } = req.body;
+
+    let imageUrls = product.productImages;
+
+    if (
+      req.files &&
+      req.files.productImages &&
+      req.files.productImages.length > 0
+    ) {
+      imageUrls = await Promise.all(
+        req.files.productImages.map(async (file) => {
+          return await uploadOnCloudinary(file.path, "productImages");
+        })
+      );
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        $set: {
+          name,
+          description,
+          price,
+          brand,
+          rating,
+          gender,
+          sizes,
+          productImages: imageUrls,
+        },
+      },
+      { new: true } // Return the updated document
+    );
+
+    return res.status(200).json({
+      message: "Product updated successfully.",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    res.status(500).send("Internal Server Error: " + error.message);
+  }
+};
+
+const deleteProduct = async (req, res) => {
+  try {
+    const { isAdmin } = req.user;
+
+    if (!isAdmin) {
+      return res
+        .status(403)
+        .send("You are not authorized to delete this product.");
+    }
+
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).send("Product not found.");
+    }
+
+    const path = "urban-glare/productImages";
+
+    if (product?.productImages && Array.isArray(product?.productImages)) {
+      // Handle multiple images
+      for (const imageUrl of product.productImages) {
+        const publicId = extractPublicId(imageUrl);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(`${path}/${publicId}`);
+          } catch (cloudinaryError) {
+            console.error("Cloudinary error:", cloudinaryError.message);
+            // Continue with deletion even if one image fails
+          }
+        }
+      }
+    } else if (typeof product.productImages === "string") {
+      // Handle single image
+      const publicId = extractPublicId(product.productImages);
+      if (publicId) {
+        await cloudinary.uploader.destroy(`${path}/${publicId}`);
+      }
+    }
+
+    await product.deleteOne();
+
+    return res.status(200).json({
+      message: "Product deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Error deleting product:", error.message);
+    return res.status(500).send("Internal Server Error: " + error.message);
+  }
+};
 
 const getAllProducts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -131,4 +244,11 @@ const getFilteredProducts = async (req, res) => {
   }
 };
 
-export { createProduct, getAllProducts, getProductById, getFilteredProducts };
+export {
+  createProduct,
+  editProduct,
+  deleteProduct,
+  getAllProducts,
+  getProductById,
+  getFilteredProducts,
+};

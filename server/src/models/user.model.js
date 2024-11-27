@@ -57,11 +57,12 @@ const userSchema = new mongoose.Schema(
         },
         quantity: {
           type: Number,
-          required: true,
           default: 1,
+          required: true,
         },
         totalAmount: {
           type: Number,
+          default: 0,
           required: true,
         },
       },

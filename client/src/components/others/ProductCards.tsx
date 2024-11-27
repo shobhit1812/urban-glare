@@ -56,16 +56,18 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
             className="w-full h-80 object-cover"
           />
         </Link>
-        <button
-          onClick={toggleFavoriteHandler}
-          className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md"
-        >
-          {isFavorite ? (
-            <AiFillHeart className="text-red-500" size={24} />
-          ) : (
-            <AiOutlineHeart size={24} />
-          )}
-        </button>
+        {!user?.isAdmin && (
+          <button
+            onClick={toggleFavoriteHandler}
+            className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md"
+          >
+            {isFavorite ? (
+              <AiFillHeart className="text-red-500" size={24} />
+            ) : (
+              <AiOutlineHeart size={24} />
+            )}
+          </button>
+        )}
       </CardHeader>
 
       <CardContent>

@@ -13,6 +13,7 @@ const Wishlist = lazy(() => import("./pages/Wishlist"));
 const Register = lazy(() => import("./pages/Register"));
 const Checkout = lazy(() => import("./pages/Checkout"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const EditProduct = lazy(() => import("./pages/EditProduct"));
 const Orders = lazy(() => import("./components/admin/Orders"));
 const Clients = lazy(() => import("./components/admin/Clients"));
 const CreateProduct = lazy(() => import("./pages/CreateProduct"));
@@ -73,6 +74,14 @@ const appRouter = createBrowserRouter([
         element: (
           <LazyLoad>
             <CreateProduct />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "edit-product/:productId",
+        element: (
+          <LazyLoad>
+            <EditProduct />
           </LazyLoad>
         ),
       },
