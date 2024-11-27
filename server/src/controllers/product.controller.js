@@ -3,16 +3,18 @@ import { v2 as cloudinary } from "cloudinary";
 import Product from "../models/product.model.js";
 import { validateProduct } from "../utils/validator.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
-
-const extractPublicId = (url) => {
-  const parts = url.split("/");
-  const fileNameWithExtension = parts[parts.length - 1]; // e.g., "sample.jpg"
-  const [publicId] = fileNameWithExtension.split("."); // Split by "." to remove file extension
-  return publicId;
-};
+import { extractPublicId } from "../utils/extractPublicId.js";
 
 const createProduct = async (req, res) => {
   try {
+    const { isAdmin } = req.user;
+
+    if (!isAdmin) {
+      return res
+        .status(403)
+        .send("You are not authorized to edit this product.");
+    }
+
     validateProduct(req);
 
     const { name, description, price, brand, rating, gender, sizes } = req.body;
@@ -198,11 +200,6 @@ const getAllProducts = async (req, res) => {
 const getProductById = async (req, res) => {
   try {
     const { productId } = req.params;
-
-    // BUG: use validator
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).send("Invalid product ID.");
-    }
 
     const product = await Product.findById(productId);
 

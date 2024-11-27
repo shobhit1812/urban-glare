@@ -23,9 +23,6 @@ router.route("/create-product").post(
   createProduct
 );
 
-// router.route("/get-all-products").get(verifyJWT, getAllProducts);
-// router.route("/get-product/:productId").get(verifyJWT, getProductById);
-
 router.route("/edit-product/:productId").patch(
   verifyJWT,
   upload.fields([
@@ -36,6 +33,7 @@ router.route("/edit-product/:productId").patch(
   ]),
   editProduct
 );
+
 router.route("/delete-product/:productId").delete(verifyJWT, deleteProduct);
 router.route("/get-all-products").get(getAllProducts);
 router.route("/get-product/:productId").get(getProductById);

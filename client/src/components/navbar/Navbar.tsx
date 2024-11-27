@@ -47,7 +47,7 @@ const adminComponents: AdminComponentLink[] = [
 
 const Navbar: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [cartItems, setCartItems] = useState<number>();
+  const [cartItems, setCartItems] = useState<number>(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -209,7 +209,7 @@ const Navbar: React.FC = () => {
               <CiShoppingCart size={30} className="mr-1 relative" />
             </Link>
             <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-600 text-xs text-white rounded-full px-2 py-0.5">
-              {!user ? "0" : cartItems}
+              {cartItems}
             </span>
           </div>
         )}
