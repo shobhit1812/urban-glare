@@ -22,7 +22,7 @@ import {
 const Sidebar: React.FC = () => {
   const dispatch = useDispatch();
   const allProducts: Product[] = useSelector(
-    (state: RootState) => state.allProduct
+    (state: RootState) => state?.allProduct
   );
 
   const [priceOrder, setPriceOrder] = useState<string | null>(null);
@@ -79,12 +79,12 @@ const Sidebar: React.FC = () => {
   };
 
   const handleReset = () => {
+    dispatch(clearProducts());
     setPriceOrder(null);
     setSelectedGenders([]);
     setSelectedBrands([]);
     setSelectedSizes([]);
     setSelectedRatings([]);
-    dispatch(clearProducts()); // Clears filtered products
     dispatch(addFilteredProduct(allProducts)); // Resets to all products
   };
 

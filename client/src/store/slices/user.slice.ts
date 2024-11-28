@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "@/helpers/constants/user";
+import User from "@/interfaces/user.interface";
 
 const initialState: User | null = null;
 

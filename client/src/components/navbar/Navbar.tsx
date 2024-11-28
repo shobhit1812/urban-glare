@@ -52,7 +52,7 @@ const Navbar: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const user: User | null = useSelector((state: RootState) => state.user);
+  const user: User = useSelector((state: RootState) => state.user);
 
   const handleLogoClick = () => {
     dispatch(clearProducts());
@@ -101,7 +101,7 @@ const Navbar: React.FC = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      dispatch(removeUser());
+      dispatch(removeUser({}));
       navigate("/");
       toast.success("Successfully logout!!!", {
         position: "bottom-right",

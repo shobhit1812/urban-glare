@@ -1,29 +1,28 @@
-/* eslint-disable react-refresh/only-export-components */
-import Home from "./pages/Home";
-import Error from "./pages/Error";
-import Browse from "./pages/Browse";
-import { lazy, Suspense } from "react";
+import Home from "@/pages/Home";
+import Error from "@/pages/Error";
+import Browse from "@/pages/Browse";
+import { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import LoadingFallback from "./components/others/LoadingFallback";
-
-// Lazy load components
-const Cart = lazy(() => import("./pages/Cart"));
-const Login = lazy(() => import("./pages/Login"));
-const Wishlist = lazy(() => import("./pages/Wishlist"));
-const Register = lazy(() => import("./pages/Register"));
-const Checkout = lazy(() => import("./pages/Checkout"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const EditProduct = lazy(() => import("./pages/EditProduct"));
-const Orders = lazy(() => import("./components/admin/Orders"));
-const Clients = lazy(() => import("./components/admin/Clients"));
-const CreateProduct = lazy(() => import("./pages/CreateProduct"));
-const Products = lazy(() => import("./components/admin/Products"));
-const ProductDetails = lazy(() => import("./pages/ProductDetails"));
+import LoadingFallback from "@/components/others/LoadingFallback";
+import {
+  Cart,
+  Login,
+  Wishlist,
+  Register,
+  Checkout,
+  Dashboard,
+  EditProduct,
+  Orders,
+  Clients,
+  CreateProduct,
+  Products,
+  ProductDetails,
+} from "@/helpers/constants/Imports";
 
 // Reusable component for loading lazy components with fallback
-const LazyLoad: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <Suspense fallback={<LoadingFallback />}>{children}</Suspense>
-);
+const LazyLoad: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return <Suspense fallback={<LoadingFallback />}>{children}</Suspense>;
+};
 
 const appRouter = createBrowserRouter([
   {

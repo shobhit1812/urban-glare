@@ -1,8 +1,8 @@
 import axios from "axios";
-import ProductCards from "../others/ProductCards";
 import Product from "@/interfaces/product.interface";
-import CustomPagination from "../others/CustomPagination";
-import ProductCardSkeleton from "../skeleton/ProductCardSkeleton";
+import ProductCards from "@/components/others/ProductCards";
+import CustomPagination from "@/components/others/CustomPagination";
+import ProductCardSkeleton from "@/components/skeleton/ProductCardSkeleton";
 
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
@@ -62,7 +62,7 @@ const MainContainer: React.FC = () => {
               <ProductCardSkeleton key={index} />
             ))
           : productsToDisplay.map((product: Product) => (
-              <ProductCards key={product._id} product={product} />
+              <ProductCards key={product?._id} product={product} />
             ))}
       </div>
 

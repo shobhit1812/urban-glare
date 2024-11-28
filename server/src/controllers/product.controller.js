@@ -173,6 +173,7 @@ const deleteProduct = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
+  // parseInt parses a value as a string and return the first string
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 9;
   const skip = (page - 1) * limit;

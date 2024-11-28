@@ -3,7 +3,7 @@ import axios from "axios";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import { User } from "@/helpers/constants/user";
+import User from "@/interfaces/user.interface";
 
 interface FavoriteState {
   items: string[]; // List of product IDs

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { BASE_URL } from "@/helpers/constants/server_url";
-import { CartItem } from "@/helpers/constants/cartItem";
+import CartItem from "@/interfaces/cart.interface";
 
 export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",

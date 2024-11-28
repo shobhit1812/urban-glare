@@ -1,4 +1,3 @@
-import React from "react";
 import useOnline from "@/helpers/hooks/useOnline";
 import Sidebar from "@/components/browse/Sidebar";
 import MainContainer from "@/components/browse/MainContainer";
