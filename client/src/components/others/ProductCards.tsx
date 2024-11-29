@@ -41,7 +41,7 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
         );
         setIsFavorite(!isFavorite);
       } catch (error: unknown) {
-        console.log("Error while toggling: ", error.message);
+        console.log("Error while toggling: ", error);
       }
     } else {
       toast.error("Please Login!!!", {

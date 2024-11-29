@@ -32,6 +32,8 @@ const ProductDetails: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const formattedPrice = new Intl.NumberFormat("en-IN").format(product?.price);
+
   const handleAddToCart = async () => {
     if (!user) {
       return toast.info("Please login to add items to the cart.", {
@@ -49,10 +51,10 @@ const ProductDetails: React.FC = () => {
         `${BASE_URL}/cart/add-to-cart`,
         { userId: user?._id, productId, quantity: 1 },
         {
-          withCredentials: true,
           headers: {
             Authorization: `Bearer ${user?.token}`,
           },
+          withCredentials: true,
         }
       );
       navigate("/cart");
@@ -72,166 +74,153 @@ const ProductDetails: React.FC = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        window.scrollTo(0, 0);
+
         const response = await axios.get(
           `${BASE_URL}/product/get-product/${productId}`,
           {
             withCredentials: true,
           }
         );
-        setProduct(response.data.product);
+        setProduct(response?.data?.product);
       } catch (error: unknown) {
         console.error("Error fetching product details: ", error);
       }
     };
     fetchProduct();
-
-    // const fetchFavorites = async () => {
-    //   try {
-    //     const response = await axios.get(
-    //       `${BASE_URL}/favorite/get-all-favorites`,
-    //       { withCredentials: true }
-    //     );
-    //     setIsFavorite(response.data.includes(productId));
-    //   } catch (error: any) {
-    //     console.error("Error fetching favorites:", error.message);
-    //   }
-    // };
-    // fetchFavorites();
   }, [productId]);
 
-  const toggleFavorite = async () => {
-    if (!user?._id) {
+  const toggleFavoriteHandler = async () => {
+    if (user?._id) {
+      try {
+        await axios.post(
+          `${BASE_URL}/favorite/toggle-favorites`,
+          { productId },
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+            withCredentials: true,
+          }
+        );
+        setIsFavorite(!isFavorite);
+      } catch (error: unknown) {
+        console.log("Error while toggling: ", error);
+      }
+    } else {
       toast.error("Please Login!!!", {
         position: "bottom-right",
         theme: "dark",
         autoClose: 5000,
         draggable: true,
       });
-    } else {
-      setIsFavorite(!isFavorite);
     }
-
-    // try {
-    //   await axios.post(
-    //     `${BASE_URL}/favorite/toggle-favorites`,
-    //     { productId },
-    //     { withCredentials: true }
-    //   );
-    //   setIsFavorite(!isFavorite);
-    // } catch (error) {
-    //   console.error("Error toggling favorite:", error);
-    // }
   };
-
-  if (!product) return <ProductDetailsSkeleton />;
-
-  const formattedPrice = new Intl.NumberFormat("en-IN").format(product.price);
 
   return (
     <>
-      <div className="p-4 md:p-8 lg:p-12 max-w-screen-xl mx-auto">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left Section: Product Carousel */}
-          <div className="flex-1 max-w-screen-lg lg:max-w-lg mx-auto">
-            <Carousel className="max-w-md">
-              <CarouselContent>
-                {product.productImages.map((img, index) => (
-                  <CarouselItem key={index}>
-                    <img
-                      src={img}
-                      alt={`${product.name} image ${index + 1}`}
-                      className="w-full h-96 md:h-[28rem] lg:h-[32rem] object-contain rounded-lg shadow-md cursor-pointer"
-                      onClick={() => setEnlargedImage(img)}
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
-          </div>
+      {!product ? (
+        <ProductDetailsSkeleton />
+      ) : (
+        <div className="p-4 md:p-8 lg:p-12 max-w-screen-xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex-1 max-w-screen-lg lg:max-w-lg mx-auto">
+              <Carousel className="max-w-md">
+                <CarouselContent>
+                  {product.productImages.map((img, index) => (
+                    <CarouselItem key={index}>
+                      <img
+                        src={img}
+                        alt={`${product.name} image ${index + 1}`}
+                        className="w-full h-96 md:h-[28rem] lg:h-[32rem] object-contain rounded-lg shadow-md cursor-pointer"
+                        onClick={() => setEnlargedImage(img)}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </div>
 
-          {/* Right Section: Product Details */}
-          <div className="flex-1 px-4 lg:px-8">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h1 className="text-3xl md:text-3xl font-bold">
-                  {product.name}
-                </h1>
-                <p className="text-gray-600 pt-2 text-sm md:text-base">
-                  {product.brand}
-                </p>
+            <div className="flex-1 px-4 lg:px-8">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h1 className="text-3xl md:text-3xl font-bold">
+                    {product.name}
+                  </h1>
+                  <p className="text-gray-600 pt-2 text-sm md:text-base">
+                    {product.brand}
+                  </p>
+                </div>
+                {!user?.isAdmin && (
+                  <button
+                    onClick={toggleFavoriteHandler}
+                    className="bg-white p-2 rounded-full shadow-md"
+                  >
+                    {isFavorite ? (
+                      <AiFillHeart className="text-red-500" size={24} />
+                    ) : (
+                      <AiOutlineHeart size={24} />
+                    )}
+                  </button>
+                )}
               </div>
-              {!user?.isAdmin && (
-                <button
-                  onClick={toggleFavorite}
-                  className="bg-white p-2 rounded-full shadow-md"
+
+              <div className="flex items-center mt-2 mb-4">
+                <div className="flex text-yellow-500">
+                  {Array.from({ length: product.rating }, (_, i) => (
+                    <AiFillStar key={i} size={20} />
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-3xl font-semibold text-gray-900 mb-4">
+                ₹ {formattedPrice}
+              </p>
+
+              <p className="text-gray-700 mb-6">{product.description}</p>
+
+              <div className="mb-4">
+                <div className="flex gap-2 flex-wrap">
+                  {product.sizes.map((size) => (
+                    <span
+                      key={size}
+                      className="border px-3 py-1 rounded-lg text-gray-700 text-sm cursor-pointer hover:bg-gray-100"
+                    >
+                      {size}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {!user?.isAdmin ? (
+                <Button
+                  onClick={handleAddToCart}
+                  className="w-full py-3 rounded-lg text-lg flex items-center justify-center"
+                  disabled={loading}
                 >
-                  {isFavorite ? (
-                    <AiFillHeart className="text-red-500" size={24} />
+                  {loading ? (
+                    <ThreeDots
+                      height="30"
+                      width="30"
+                      color="#ffffff"
+                      ariaLabel="three-dots-loading"
+                      visible={true}
+                    />
                   ) : (
-                    <AiOutlineHeart size={24} />
+                    "Add to Cart"
                   )}
-                </button>
+                </Button>
+              ) : (
+                <Button className="w-full bg-yellow-500 hover:bg-yellow-600 py-3 rounded-lg text-lg">
+                  <Link to={`/edit-product/${product?._id}`}>Edit Product</Link>
+                </Button>
               )}
             </div>
-
-            <div className="flex items-center mt-2 mb-4">
-              <div className="flex text-yellow-500">
-                {Array.from({ length: product.rating }, (_, i) => (
-                  <AiFillStar key={i} size={20} />
-                ))}
-              </div>
-            </div>
-
-            <p className="text-3xl font-semibold text-gray-900 mb-4">
-              ₹ {formattedPrice}
-            </p>
-
-            {/* Product Description */}
-            <p className="text-gray-700 mb-6">{product.description}</p>
-
-            {/* Sizes */}
-            <div className="mb-4">
-              <div className="flex gap-2 flex-wrap">
-                {product.sizes.map((size) => (
-                  <span
-                    key={size}
-                    className="border px-3 py-1 rounded-lg text-gray-700 text-sm cursor-pointer hover:bg-gray-100"
-                  >
-                    {size}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Add to Cart Button */}
-            {!user?.isAdmin ? (
-              <Button
-                onClick={handleAddToCart}
-                className="w-full py-3 rounded-lg text-lg flex items-center justify-center"
-                disabled={loading}
-              >
-                {loading ? (
-                  <ThreeDots
-                    height="30"
-                    width="30"
-                    color="#ffffff"
-                    ariaLabel="three-dots-loading"
-                    visible={true}
-                  />
-                ) : (
-                  "Add to Cart"
-                )}
-              </Button>
-            ) : (
-              <Button className="w-full bg-yellow-500 hover:bg-yellow-600 py-3 rounded-lg text-lg">
-                <Link to={`/edit-product/${product?._id}`}>Edit Product</Link>
-              </Button>
-            )}
           </div>
         </div>
-      </div>
+      )}
 
       {/* Lightbox Modal for Enlarged Image */}
       {enlargedImage && (
