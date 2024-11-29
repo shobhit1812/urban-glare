@@ -1,13 +1,14 @@
+import axios from "axios";
 import User from "@/interfaces/user.interface";
 import Product from "@/interfaces/product.interface";
 
-import { useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { RootState, AppDispatch } from "@/store/store";
-import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
+import { BASE_URL } from "@/helpers/constants/server_url";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { toggleFavorite, fetchFavorites } from "@/store/slices/favorite.slice";
 import {
   Card,
   CardContent,
@@ -20,17 +21,28 @@ interface CardProps {
 }
 
 const ProductCards: React.FC<CardProps> = ({ product }) => {
-  const dispatch: AppDispatch = useDispatch(); // Properly type dispatch
-  const { items: favorites } = useSelector(
-    (state: RootState) => state.favorite
-  );
   const user: User = useSelector((state: RootState) => state.user);
 
-  const isFavorite: boolean = favorites.includes(product?._id);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
-  const toggleFavoriteHandler = () => {
+  const toggleFavoriteHandler = async () => {
     if (user?._id) {
-      dispatch(toggleFavorite(product?._id));
+      try {
+        const productId = product?._id;
+        await axios.post(
+          `${BASE_URL}/favorite/toggle-favorites`,
+          { productId },
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+            withCredentials: true,
+          }
+        );
+        setIsFavorite(!isFavorite);
+      } catch (error: unknown) {
+        console.log("Error while toggling: ", error.message);
+      }
     } else {
       toast.error("Please Login!!!", {
         position: "bottom-right",
@@ -40,12 +52,6 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
       });
     }
   };
-
-  useEffect(() => {
-    if (user?._id && favorites.length === 0) {
-      dispatch(fetchFavorites(user?._id));
-    }
-  }, [dispatch, user, favorites]);
 
   // Format price for thousands only
   const formattedPrice =

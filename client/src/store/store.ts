@@ -3,7 +3,6 @@ import userSlice from "./slices/user.slice";
 import allProductSlice from "./slices/allProducts.slice";
 import filteredProductSlice from "./slices/filteredProducts.slice";
 import cartSlice from "./slices/cart.slice";
-import favoriteSlice from "./slices/favorite.slice";
 import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
 import {
@@ -26,7 +25,6 @@ const rootReducer = combineReducers({
   allProduct: allProductSlice,
   filteredProduct: filteredProductSlice,
   cart: cartSlice,
-  favorite: favoriteSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
