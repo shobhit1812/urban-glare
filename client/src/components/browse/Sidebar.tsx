@@ -20,27 +20,16 @@ import {
 } from "@/components/ui/accordion";
 
 const Sidebar: React.FC = () => {
-  const dispatch = useDispatch();
-  const allProducts: Product[] = useSelector(
-    (state: RootState) => state?.allProduct
-  );
-
   const [priceOrder, setPriceOrder] = useState<string | null>(null);
   const [selectedGenders, setSelectedGenders] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
 
-  // Update filtered products whenever a filter is changed
-  useEffect(() => {
-    applyFilters();
-  }, [
-    priceOrder,
-    selectedGenders,
-    selectedBrands,
-    selectedSizes,
-    selectedRatings,
-  ]);
+  const dispatch = useDispatch();
+  const allProducts: Product[] = useSelector(
+    (state: RootState) => state?.allProduct
+  );
 
   const applyFilters = () => {
     let filteredProducts = [...allProducts];
@@ -87,6 +76,17 @@ const Sidebar: React.FC = () => {
     setSelectedRatings([]);
     dispatch(addFilteredProduct(allProducts)); // Resets to all products
   };
+
+  // Update filtered products whenever a filter is changed
+  useEffect(() => {
+    applyFilters();
+  }, [
+    priceOrder,
+    selectedGenders,
+    selectedBrands,
+    selectedSizes,
+    selectedRatings,
+  ]);
 
   return (
     <>
