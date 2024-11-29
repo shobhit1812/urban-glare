@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { RootState, AppDispatch } from "@/store/store";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleFavorite, fetchFavorites } from "@/store/slices/favorite.slice";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { toggleFavorite, fetchFavorites } from "@/store/slices/favorite.slice";
 import {
   Card,
   CardContent,

@@ -4,7 +4,7 @@ import User from "@/interfaces/user.interface";
 import CartItem from "@/interfaces/cart.interface";
 import CartItems from "@/components/cart/CartItems";
 import CartSummary from "@/components/cart/CartSummary";
-import LoadingSpinner from "@/components/skeleton/LoadingSpinner";
+import LoadingSpinner from "@/components/shimmer-effect/LoadingSpinner";
 
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
