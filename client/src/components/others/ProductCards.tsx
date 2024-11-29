@@ -2,6 +2,7 @@ import User from "@/interfaces/user.interface";
 import Product from "@/interfaces/product.interface";
 
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { RootState, AppDispatch } from "@/store/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,16 +26,22 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
   );
   const user: User = useSelector((state: RootState) => state.user);
 
-  const isFavorite: boolean = favorites.includes(product._id);
+  const isFavorite: boolean = favorites.includes(product?._id);
 
   const toggleFavoriteHandler = () => {
     if (user?._id) {
-      dispatch(toggleFavorite(product._id));
+      dispatch(toggleFavorite(product?._id));
+    } else {
+      toast.error("Please Login!!!", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
     }
   };
 
   useEffect(() => {
-    // Fetch favorites only if a user is logged in
     if (user?._id && favorites.length === 0) {
       dispatch(fetchFavorites(user?._id));
     }

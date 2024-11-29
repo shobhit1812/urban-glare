@@ -33,6 +33,10 @@ const CustomPagination: React.FC<PaginationProps> = ({
           </Button>
         </PaginationItem>
 
+        <div className="bg-muted text-muted-foreground px-3 py-1 rounded-md text-lg font-medium flex items-center justify-center mx-2">
+          {page} / {totalPages}
+        </div>
+
         <PaginationItem>
           <Button
             disabled={page >= totalPages}

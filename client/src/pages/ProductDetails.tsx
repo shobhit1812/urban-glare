@@ -100,7 +100,17 @@ const ProductDetails: React.FC = () => {
   }, [productId]);
 
   const toggleFavorite = async () => {
-    setIsFavorite(!isFavorite);
+    if (!user?._id) {
+      toast.error("Please Login!!!", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
+    } else {
+      setIsFavorite(!isFavorite);
+    }
+
     // try {
     //   await axios.post(
     //     `${BASE_URL}/favorite/toggle-favorites`,

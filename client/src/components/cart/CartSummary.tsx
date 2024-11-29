@@ -1,6 +1,10 @@
+import User from "@/interfaces/user.interface";
 import CartItem from "@/interfaces/cart.interface";
 
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCartActions } from "@/helpers/hooks/useCartActions";
 
@@ -22,6 +26,23 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       0
     ) || 0;
 
+  const user: User = useSelector((state: RootState) => state.user);
+
+  const navigate = useNavigate();
+
+  const handleProceedToPayment = () => {
+    if (user?._id) {
+      navigate("/checkout");
+    } else {
+      toast.error("Please Login!!!", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
+    }
+  };
+
   return (
     <div className="w-full lg:w-1/3">
       <div className="bg-gray-100 p-6 rounded-lg shadow-lg space-y-4">
@@ -31,11 +52,13 @@ const CartSummary: React.FC<CartSummaryProps> = ({
         <Button className="w-full py-3 mt-4 text-lg" onClick={handleClearCart}>
           Clear Cart
         </Button>
-        <Link to="/checkout">
-          <Button className="w-full py-3 mt-4 text-lg bg-green-500 hover:bg-green-600">
-            Proceed to Payment
-          </Button>
-        </Link>
+
+        <Button
+          className="w-full py-3 mt-4 text-lg bg-green-500 hover:bg-green-600"
+          onClick={handleProceedToPayment}
+        >
+          Proceed to Payment
+        </Button>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import User from "@/interfaces/user.interface";
 import CartItem from "@/interfaces/cart.interface";
 
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { BASE_URL } from "@/helpers/constants/server_url";
@@ -54,11 +55,20 @@ export const useCartActions = (setCartItems: (items: CartItem[]) => void) => {
   };
 
   const handleClearCart = async () => {
-    try {
-      await axios.delete(`${BASE_URL}/cart/clear-cart`, fetchHeaders());
-      setCartItems([]);
-    } catch (error: unknown) {
-      console.error("Error while clearing cart: ", error);
+    if (!user?._id) {
+      toast.error("Please Login!!!", {
+        position: "bottom-right",
+        theme: "dark",
+        autoClose: 5000,
+        draggable: true,
+      });
+    } else {
+      try {
+        await axios.delete(`${BASE_URL}/cart/clear-cart`, fetchHeaders());
+        setCartItems([]);
+      } catch (error: unknown) {
+        console.error("Error while clearing cart: ", error);
+      }
     }
   };
 

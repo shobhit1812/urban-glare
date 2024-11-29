@@ -1,63 +1,91 @@
 import { FiGithub } from "react-icons/fi";
-import { FaXTwitter } from "react-icons/fa6";
-import { FaInstagram } from "react-icons/fa6";
+import { FaXTwitter, FaInstagram } from "react-icons/fa6";
+import { Mail, Phone } from "lucide-react";
+
+const SocialLink = ({
+  href,
+  icon: Icon,
+  ariaLabel,
+}: {
+  href: string;
+  icon: React.ElementType;
+  ariaLabel: string;
+}) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={ariaLabel}
+    className="text-2xl text-gray-700 hover:text-black transition-all duration-300 transform hover:-translate-y-1 hover:scale-110"
+  >
+    <Icon />
+  </a>
+);
+
+const SectionTitle = ({ children }: { children: React.ReactNode }) => (
+  <h3 className="text-xl font-bold mb-4 border-b pb-2 text-gray-800 uppercase tracking-wider">
+    {children}
+  </h3>
+);
+
+const ContactInfo = () => (
+  <div className="space-y-3 text-gray-600">
+    <div className="flex items-center space-x-3">
+      <Mail className="text-gray-500" size={20} />
+      <span>contact@urban.glare</span>
+    </div>
+    <div className="flex items-center space-x-3">
+      <Phone className="text-gray-500" size={20} />
+      <span>+123 456 7890</span>
+    </div>
+  </div>
+);
 
 const Footer: React.FC = () => {
   return (
-    <>
-      <hr className="border-t border-black" />
-      <footer className="p-5">
-        <div className="flex flex-col md:flex-row justify-between items-start mx-auto max-w-screen-2xl px-6 md:px-16 lg:px-36 space-y-6 md:space-y-0">
-          {/* About Us Section */}
-          <div className="flex-1">
-            <h3 className="text-xl font-bold mb-2">About Us</h3>
-            <p className="text-sm">
-              {`Urban Glare is a modern e-commerce platform built with the MERN stack, designed for efficient, secure, and responsive online shopping experiences. Leveraging a range of cutting-edge technologies, urban glare offers seamless browsing, secure transactions, and an intuitive user interface tailored for both desktop and mobile users.`}
-            </p>
-          </div>
+    <footer className="bg-gray-50 border-t">
+      <div className="container mx-auto px-6 py-12 grid md:grid-cols-3 gap-10">
+        <div>
+          <SectionTitle>About Urban Glare</SectionTitle>
+          <p className="text-gray-600 leading-relaxed">
+            Urban Glare is a cutting-edge e-commerce platform built with the
+            MERN stack. We deliver seamless, secure, and responsive online
+            shopping experiences that adapt perfectly to both desktop and mobile
+            users.
+          </p>
+        </div>
 
-          {/* Follow Us Section */}
-          <div className="flex-1 md:ml-16">
-            <h3 className="text-xl font-bold mb-2">Follow Us</h3>
-            <div className="flex space-x-4">
-              <a
-                href="https://github.com/Shobhit1812"
-                target="_blank"
-                rel="noreferrer"
-                className="transition-transform hover:-translate-y-1 hover:scale-110 duration-300"
-              >
-                <FiGithub />
-              </a>
-              <a
-                href="https://x.com/shobhitnautiya_"
-                target="_blank"
-                rel="noreferrer"
-                className="transition-transform hover:-translate-y-1 hover:scale-110 duration-300"
-              >
-                <FaXTwitter />
-              </a>
-              <a
-                href="https://instagram.com/imshobhitnautiyal"
-                target="_blank"
-                rel="noreferrer"
-                className="transition-transform hover:-translate-y-1 hover:scale-110 duration-300"
-              >
-                <FaInstagram />
-              </a>
-            </div>
-          </div>
-
-          {/* Contact Us Section */}
-          <div className="flex-2">
-            <h3 className="text-xl font-bold mb-2">Contact Us</h3>
-            <p className="text-sm">
-              Email: contact@urban.glare <br />
-              Phone: +123 456 7890
-            </p>
+        <div>
+          <SectionTitle>Connect With Us</SectionTitle>
+          <div className="flex space-x-6">
+            <SocialLink
+              href="https://github.com/Shobhit1812"
+              icon={FiGithub}
+              ariaLabel="GitHub Profile"
+            />
+            <SocialLink
+              href="https://x.com/shobhitnautiya_"
+              icon={FaXTwitter}
+              ariaLabel="Twitter Profile"
+            />
+            <SocialLink
+              href="https://instagram.com/imshobhitnautiyal"
+              icon={FaInstagram}
+              ariaLabel="Instagram Profile"
+            />
           </div>
         </div>
-      </footer>
-    </>
+
+        <div>
+          <SectionTitle>Contact Information</SectionTitle>
+          <ContactInfo />
+        </div>
+      </div>
+
+      <div className="bg-gray-100 py-4 text-center text-sm text-gray-600">
+        © {new Date().getFullYear()} Urban Glare. All Rights Reserved.
+      </div>
+    </footer>
   );
 };
 
