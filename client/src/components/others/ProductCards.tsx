@@ -6,8 +6,9 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { toggleFavorite } from "@/store/slices/favorites.slice";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   Card,
@@ -22,14 +23,22 @@ interface CardProps {
 
 const ProductCards: React.FC<CardProps> = ({ product }) => {
   const user: User = useSelector((state: RootState) => state.user);
+  const favorites = useSelector(
+    (state: RootState) => state.favorites?.items || []
+  );
 
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  // Check if this specific product is in favorites
+  const [isFavorite, setIsFavorite] = useState<boolean>(
+    favorites.some((fav) => fav._id === product._id)
+  );
+
+  const dispatch = useDispatch();
 
   const toggleFavoriteHandler = async () => {
     if (user?._id) {
       try {
         const productId = product?._id;
-        await axios.post(
+        const response = await axios.post(
           `${BASE_URL}/favorite/toggle-favorites`,
           { productId },
           {
@@ -39,9 +48,15 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
             withCredentials: true,
           }
         );
-        setIsFavorite(!isFavorite);
+        const isNowFavorite = response.data?.favorites;
+        dispatch(toggleFavorite(product));
+        setIsFavorite(isNowFavorite);
       } catch (error: unknown) {
         console.log("Error while toggling: ", error);
+        toast.error("Failed to update favorites", {
+          position: "bottom-right",
+          theme: "dark",
+        });
       }
     } else {
       toast.error("Please Login!!!", {
