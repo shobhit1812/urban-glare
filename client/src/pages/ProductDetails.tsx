@@ -4,13 +4,14 @@ import Product from "@/interfaces/product.interface";
 import ProductDetailsSkeleton from "@/components/shimmer-effect/ProductDetailsSkeleton";
 
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
+import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { toggleFavorite } from "@/store/slices/favorites.slice";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   Carousel,
@@ -22,17 +23,32 @@ import {
 
 const ProductDetails: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const { productId } = useParams<{ productId: string }>();
 
+  const dispatch = useDispatch();
+
   const user: User = useSelector((state: RootState) => state.user);
+  const favorites = useSelector(
+    (state: RootState) => state.favorites?.items || []
+  );
+
+  const [isFavorite, setIsFavorite] = useState(
+    favorites.some((fav) => fav._id === product?._id)
+  );
 
   const navigate = useNavigate();
 
   const formattedPrice = new Intl.NumberFormat("en-IN").format(product?.price);
+
+  // Update useEffect to sync isFavorite with Redux
+  useEffect(() => {
+    if (product) {
+      setIsFavorite(favorites.some((fav) => fav._id === product._id));
+    }
+  }, [favorites, product]);
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -103,7 +119,10 @@ const ProductDetails: React.FC = () => {
             withCredentials: true,
           }
         );
-        setIsFavorite(!isFavorite);
+        // Dispatch the toggle action with the full product
+        if (product) {
+          dispatch(toggleFavorite(product));
+        }
       } catch (error: unknown) {
         console.log("Error while toggling: ", error);
       }

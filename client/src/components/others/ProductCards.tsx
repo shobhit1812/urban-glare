@@ -2,10 +2,10 @@ import axios from "axios";
 import User from "@/interfaces/user.interface";
 import Product from "@/interfaces/product.interface";
 
-import { useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { RootState } from "@/store/store";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { toggleFavorite } from "@/store/slices/favorites.slice";
@@ -32,6 +32,11 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
     favorites.some((fav) => fav._id === product._id)
   );
 
+  useEffect(() => {
+    // Update isFavorite whenever the favorites array changes
+    setIsFavorite(favorites.some((fav) => fav._id === product._id));
+  }, [favorites, product._id]);
+
   const dispatch = useDispatch();
 
   const toggleFavoriteHandler = async () => {
@@ -48,9 +53,8 @@ const ProductCards: React.FC<CardProps> = ({ product }) => {
             withCredentials: true,
           }
         );
-        const isNowFavorite = response.data?.favorites;
         dispatch(toggleFavorite(product));
-        setIsFavorite(isNowFavorite);
+        setIsFavorite(response.data?.favorites);
       } catch (error: unknown) {
         console.log("Error while toggling: ", error);
         toast.error("Failed to update favorites", {
