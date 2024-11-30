@@ -1,6 +1,7 @@
 import axios from "axios";
 import User from "@/interfaces/user.interface";
 import Product from "@/interfaces/product.interface";
+import SliderCards from "@/components/others/SliderCards";
 import ProductDetailsSkeleton from "@/components/shimmer-effect/ProductDetailsSkeleton";
 
 import { toast } from "react-toastify";
@@ -237,6 +238,10 @@ const ProductDetails: React.FC = () => {
                 </Button>
               )}
             </div>
+          </div>
+
+          <div className="mt-14">
+            <SliderCards />
           </div>
         </div>
       )}

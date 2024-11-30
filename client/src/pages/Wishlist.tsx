@@ -1,14 +1,15 @@
 import axios from "axios";
 import User from "@/interfaces/user.interface";
 import Product from "@/interfaces/product.interface";
+import SliderCards from "@/components/others/SliderCards";
 
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { RootState } from "@/store/store";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
 import { toggleFavorite, setFavorites } from "@/store/slices/favorites.slice";
-import { Link } from "react-router-dom";
 
 const Wishlist: React.FC = () => {
   const dispatch = useDispatch();
@@ -109,6 +110,10 @@ const Wishlist: React.FC = () => {
           </p>
         </div>
       )}
+
+      <div className="mt-14">
+        <SliderCards />
+      </div>
     </div>
   );
 };

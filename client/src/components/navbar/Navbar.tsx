@@ -60,36 +60,27 @@ const Navbar: React.FC = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const fetchCartLength = async () => {
-        try {
-          if (user) {
-            const response = await axios.get(
-              `${BASE_URL}/cart/get-cart-items`,
-              {
-                headers: { Authorization: `Bearer ${user?.token}` },
-                withCredentials: true,
-              }
-            );
-            const length = response.data.cart?.length;
-            if (length === undefined || length === null) {
-              setCartItems(0);
-            } else {
-              setCartItems(length);
-            }
+    const fetchCartLength = async () => {
+      try {
+        if (user) {
+          const response = await axios.get(`${BASE_URL}/cart/get-cart-items`, {
+            headers: { Authorization: `Bearer ${user?.token}` },
+            withCredentials: true,
+          });
+          const length = response.data.cart?.length;
+          if (length === undefined || length === null) {
+            setCartItems(0);
           } else {
-            return null;
+            setCartItems(length);
           }
-        } catch (error: any) {
-          console.log("Cannot fetch response: ", error.message);
+        } else {
+          return null;
         }
-      };
-      fetchCartLength();
-    }, 200);
-
-    return () => {
-      clearTimeout(timer);
+      } catch (error: any) {
+        console.log("Cannot fetch response: ", error.message);
+      }
     };
+    fetchCartLength();
   }, [user]);
 
   const handleLogout = async () => {
