@@ -2,7 +2,7 @@ import axios from "axios";
 import Product from "@/interfaces/product.interface";
 import ProductCards from "@/components/others/ProductCards";
 import CustomPagination from "@/components/others/CustomPagination";
-import ProductCardSkeleton from "@/components/shimmer-effect/ProductCardSkeleton";
+import ProductCardSkeleton from "../shimmer-effect/ProductCardSkeleton";
 
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";

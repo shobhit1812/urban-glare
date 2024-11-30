@@ -2,18 +2,19 @@ import axios from "axios";
 import User from "@/interfaces/user.interface";
 import Product from "@/interfaces/product.interface";
 
+import { useEffect } from "react";
 import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
-import { AiFillStar } from "react-icons/ai";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { toggleFavorite, setFavorites } from "@/store/slices/favorites.slice";
+import { Link } from "react-router-dom";
 
 const Wishlist: React.FC = () => {
-  const [wishlist, setWishlist] = useState<Product[]>([]);
-  const [totalItems, setTotalItems] = useState<number>(0);
+  const dispatch = useDispatch();
 
   const user: User = useSelector((state: RootState) => state.user);
+  const wishlist = useSelector((state: RootState) => state.favorites.items);
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -28,8 +29,9 @@ const Wishlist: React.FC = () => {
               withCredentials: true,
             }
           );
-          setWishlist(response?.data?.favorites);
-          setTotalItems(response?.data?.total);
+
+          // Directly set favorites in Redux store
+          dispatch(setFavorites(response?.data?.favorites || []));
         }
       } catch (error) {
         console.error("Error fetching favorites:", error);
@@ -37,13 +39,13 @@ const Wishlist: React.FC = () => {
     };
 
     fetchFavorites();
-  }, [user]);
+  }, [user, dispatch]);
 
-  const handleRemove = async (productId: string) => {
+  const handleRemove = async (product: Product) => {
     try {
       await axios.post(
         `${BASE_URL}/favorite/toggle-favorites`,
-        { productId },
+        { productId: product._id },
         {
           headers: {
             Authorization: `Bearer ${user?.token}`,
@@ -51,10 +53,9 @@ const Wishlist: React.FC = () => {
           withCredentials: true,
         }
       );
-      setWishlist((prevWishlist) =>
-        prevWishlist.filter((item) => item._id !== productId)
-      );
-      setTotalItems((prevTotal) => prevTotal - 1);
+
+      // Dispatch toggle action with the entire product
+      dispatch(toggleFavorite(product));
     } catch (error) {
       console.error("Error removing item from wishlist:", error);
     }
@@ -63,7 +64,7 @@ const Wishlist: React.FC = () => {
   return (
     <div className="max-w-screen-xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">
-        Your Wishlist - {totalItems}
+        Your Wishlist - {wishlist.length}
       </h1>
       {wishlist.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -72,28 +73,28 @@ const Wishlist: React.FC = () => {
               key={item._id}
               className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
-              <img
-                src={item.productImages[0]}
-                alt={item.name}
-                className="w-full h-48 object-contain"
-              />
+              <Link to={`/${item?.name}/${item?.brand}/${item?._id}`}>
+                <img
+                  src={item.productImages[0]}
+                  alt={item.name}
+                  className="w-full h-48 object-contain"
+                />
+              </Link>
+
               <div className="p-4">
                 <h2 className="text-lg font-bold text-gray-800 truncate">
-                  {item.name}
+                  <Link to={`/${item?.name}/${item?.brand}/${item?._id}`}>
+                    {item.name}
+                  </Link>
                 </h2>
-                <p className="text-sm text-gray-600">{item.brand}</p>
-                <div className="text-yellow-500 my-2 flex">
-                  {Array.from({ length: item.rating }, (_, i) => (
-                    <AiFillStar key={i} size={20} />
-                  ))}
-                </div>
+                <p className="text-sm text-gray-600 pb-3">{item.brand}</p>
                 <p className="text-lg font-semibold text-gray-900">
                   ₹ {item.price.toLocaleString("en-IN")}
                 </p>
                 <Button
                   variant="destructive"
                   className="mt-4 w-full"
-                  onClick={() => handleRemove(item._id)}
+                  onClick={() => handleRemove(item)}
                 >
                   Remove
                 </Button>

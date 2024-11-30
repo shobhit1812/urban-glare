@@ -13,6 +13,7 @@ import { addUser } from "@/store/slices/user.slice";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { setFavorites } from "@/store/slices/favorites.slice";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Login: React.FC = () => {
@@ -53,6 +54,26 @@ const Login: React.FC = () => {
         }
       );
       dispatch(addUser(response.data.user));
+
+      try {
+        const favoritesResponse = await axios.get(
+          `${BASE_URL}/favorite/get-all-favorites`,
+          {
+            headers: {
+              Authorization: `Bearer ${response.data.user.token}`,
+            },
+            withCredentials: true,
+          }
+        );
+
+        // Dispatch favorites to Redux store
+        dispatch(setFavorites(favoritesResponse.data?.favorites || []));
+      } catch (favError) {
+        console.error("Error fetching favorites:", favError);
+        // Optionally dispatch an empty array if fetching fails
+        dispatch(setFavorites([]));
+      }
+
       navigate("/");
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {

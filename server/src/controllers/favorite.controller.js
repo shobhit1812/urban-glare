@@ -28,14 +28,11 @@ const toggleFavorite = async (req, res) => {
       user.favorites.splice(favoriteIndex, 1);
     }
 
-    const totalLength = user.favorites.length;
-
     await user.save({ validateBeforeSave: false });
 
     return res.status(200).json({
       message: "Favorites updated.",
       favorites: user.favorites,
-      total: totalLength,
       // stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   } catch (error) {
@@ -59,12 +56,9 @@ const getUserFavorites = async (req, res) => {
       return res.status(404).send("User not found.");
     }
 
-    const totalLength = user.favorites.length;
-
     return res.status(200).json({
       message: "Favorite fetched successfully.",
       favorites: user.favorites,
-      total: totalLength,
     });
   } catch (error) {
     res.status(500).send("Internal Server Error: " + error.message);
