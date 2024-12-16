@@ -26,6 +26,12 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       0
     ) || 0;
 
+  const formattedTotalPrice = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(totalPrice);
+
   const user: User = useSelector((state: RootState) => state.user);
 
   const navigate = useNavigate();
@@ -48,7 +54,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       <div className="bg-gray-100 p-6 rounded-lg shadow-lg space-y-4">
         <h2 className="text-xl font-bold">Cart Summary</h2>
         <p className="text-lg">Total Items: {totalItems}</p>
-        <p className="text-lg font-semibold">Total Price: ₹ {totalPrice}</p>
+        <p className="text-lg font-semibold">
+          Total Price: {formattedTotalPrice}
+        </p>
         <Button className="w-full py-3 mt-4 text-lg" onClick={handleClearCart}>
           Clear Cart
         </Button>
