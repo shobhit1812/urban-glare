@@ -3,6 +3,7 @@ import Empty_Cart from "@/assets/empty_cart.webp";
 import CartItem from "@/interfaces/cart.interface";
 import QuantityButtonGroup from "./QuantityButtonGroup";
 
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCartActions } from "@/helpers/hooks/useCartActions";
 
@@ -18,6 +19,12 @@ const CartItems: React.FC<CartItemsProps> = ({
   const { handleQuantityChange, handleRemoveItem } =
     useCartActions(setCartItems);
 
+  const navigate = useNavigate();
+
+  const handleHomePage = () => {
+    navigate("/");
+  };
+
   return (
     <div className="flex-1 p-4">
       {!cartItems.length ? (
@@ -30,7 +37,10 @@ const CartItems: React.FC<CartItemsProps> = ({
           <p className="text-lg text-gray-600 font-medium">
             Your cart is currently empty.
           </p>
-          <Button className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-300">
+          <Button
+            className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-300"
+            onClick={handleHomePage}
+          >
             Start Shopping
           </Button>
         </div>
