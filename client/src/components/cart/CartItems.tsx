@@ -19,27 +19,33 @@ const CartItems: React.FC<CartItemsProps> = ({
     useCartActions(setCartItems);
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 p-4">
       {!cartItems.length ? (
-        <div className="flex justify-center items-center">
+        <div className="flex flex-col items-center justify-center gap-4">
           <img
             src={Empty_Cart}
             alt="empty_cart"
-            className="w-96 h-96 rounded-3xl"
+            className="w-64 h-64 object-contain"
           />
+          <p className="text-lg text-gray-600 font-medium">
+            Your cart is currently empty.
+          </p>
+          <Button className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-300">
+            Start Shopping
+          </Button>
         </div>
       ) : (
-        <div className="max-h-[500px] overflow-y-auto p-4 border rounded-md shadow-md">
+        <div className="max-h-[500px] overflow-y-auto space-y-4">
           {cartItems.map((item) => (
             <div
               key={item?._id}
-              className="flex items-center justify-between border-b pb-4 mb-4"
+              className="flex items-center justify-between bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center gap-4">
                 <img
                   src={item.productId?.productImages?.[0] || logo}
                   alt={item.productId?.name || "Product Image"}
-                  className="w-20 h-20 object-cover rounded"
+                  className="w-20 h-20 object-cover rounded-md border"
                 />
                 <div>
                   <h2 className="text-lg font-semibold">
@@ -48,18 +54,20 @@ const CartItems: React.FC<CartItemsProps> = ({
                   <p className="text-gray-600">₹ {item.productId?.price}</p>
                 </div>
               </div>
-              <QuantityButtonGroup
-                productId={item.productId?._id}
-                quantity={item.quantity}
-                onIncrease={(id) => handleQuantityChange(id, true)}
-                onDecrease={(id) => handleQuantityChange(id, false)}
-              />
-              <Button
-                onClick={() => handleRemoveItem(item.productId?._id)}
-                className="ml-4 px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
-              >
-                Remove
-              </Button>
+              <div className="flex items-center gap-4">
+                <QuantityButtonGroup
+                  productId={item.productId?._id}
+                  quantity={item.quantity}
+                  onIncrease={(id) => handleQuantityChange(id, true)}
+                  onDecrease={(id) => handleQuantityChange(id, false)}
+                />
+                <Button
+                  onClick={() => handleRemoveItem(item.productId?._id)}
+                  className="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
+                >
+                  Remove
+                </Button>
+              </div>
             </div>
           ))}
         </div>
