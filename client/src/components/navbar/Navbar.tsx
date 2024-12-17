@@ -88,6 +88,8 @@ const Navbar: React.FC = () => {
         }
       };
       fetchCartLength();
+    } else {
+      setCartItems(0);
     }
 
     return () => {

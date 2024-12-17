@@ -118,6 +118,10 @@ const decrementFromCart = async (req, res) => {
     }
 
     await user.save();
+
+    // Emit cart update using the global io instance
+    global.io.emit("cartUpdate", { count: user.cart.length });
+
     return res.status(200).json({
       message:
         "Product quantity decremented or removed from cart successfully.",
@@ -142,6 +146,10 @@ const clearCart = async (req, res) => {
     user.cart = [];
 
     await user.save();
+
+    // Emit cart update using the global io instance
+    global.io.emit("cartUpdate", { count: user.cart.length });
+
     return res.status(200).json({ message: "Cart cleared.", cart: user.cart });
   } catch (error) {
     res.status(500).send("Internal Server Error: ", error.message);
@@ -207,6 +215,9 @@ const removeItemFromCart = async (req, res) => {
     user.cart.splice(cartItemIndex, 1);
 
     await user.save();
+
+    // Emit cart update using the global io instance
+    global.io.emit("cartUpdate", { count: user.cart.length });
 
     return res.status(200).json({
       message: "Product removed from cart successfully.",
