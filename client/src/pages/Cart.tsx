@@ -4,6 +4,7 @@ import User from "@/interfaces/user.interface";
 import CartItem from "@/interfaces/cart.interface";
 import CartItems from "@/components/cart/CartItems";
 import CartSummary from "@/components/cart/CartSummary";
+import SliderCards from "@/components/others/SliderCards";
 import LoadingSpinner from "@/components/shimmer-effect/LoadingSpinner";
 
 import { RootState } from "@/store/store";
@@ -50,6 +51,9 @@ const Cart: React.FC = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         <CartItems cartItems={cartItems} setCartItems={setCartItems} />
         <CartSummary cartItems={cartItems} setCartItems={setCartItems} />
+      </div>
+      <div className="mt-16">
+        <SliderCards />
       </div>
     </div>
   );

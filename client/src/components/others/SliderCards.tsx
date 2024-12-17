@@ -5,7 +5,7 @@ import "swiper/css/navigation";
 import axios from "axios";
 import Product from "@/interfaces/product.interface";
 import LoadingSpinner from "@/components/shimmer-effect/LoadingSpinner";
-import ProductCardSkeleton from "@/components/shimmer-effect/ProductCardSkeleton";
+// import ProductCardSkeleton from "@/components/shimmer-effect/ProductCardSkeleton";
 
 import { Navigation } from "swiper/modules";
 import { useEffect, useState } from "react";
