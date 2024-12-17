@@ -36,12 +36,20 @@ const addToCart = async (req, res) => {
     }
 
     await user.save();
+
+    // Emit cart update using the global io instance
+    global.io.emit("cartUpdate", { count: user.cart.length });
+
     return res.status(200).json({
       message: "Product added to cart successfully.",
       cart: user.cart,
     });
   } catch (error) {
-    res.status(500).send("Error adding to cart: ", error.message);
+    console.error("Detailed error in addToCart:", error);
+    res.status(500).json({
+      message: "An error occurred while adding to cart",
+      error: error.message,
+    });
   }
 };
 

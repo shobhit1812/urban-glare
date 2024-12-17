@@ -7,6 +7,7 @@ import User from "@/interfaces/user.interface";
 import { toast } from "react-toastify";
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 import { CiShoppingCart } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 import { ThreeDots } from "react-loader-spinner";
@@ -14,6 +15,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "@/store/slices/user.slice";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { SOCKET_URL } from "@/helpers/constants/server_url";
 import { clearFavorites } from "@/store/slices/favorites.slice";
 import { clearProducts } from "@/store/slices/filteredProducts.slice";
 import {
@@ -60,27 +62,40 @@ const Navbar: React.FC = () => {
   };
 
   useEffect(() => {
-    const fetchCartLength = async () => {
-      try {
-        if (user) {
+    let socket: Socket;
+
+    if (user) {
+      // Establish WebSocket connection
+      socket = io(`ws://${SOCKET_URL}`, {
+        transports: ["websocket"],
+      }); // Replace with your server URL
+
+      // Listen for cart updates with type declaration
+      socket.on("cartUpdate", (data: { count: number }) => {
+        setCartItems(data.count);
+      });
+
+      // Fetch initial cart length
+      const fetchCartLength = async () => {
+        try {
           const response = await axios.get(`${BASE_URL}/cart/get-cart-items`, {
             headers: { Authorization: `Bearer ${user?.token}` },
             withCredentials: true,
           });
-          const length = response.data.cart?.length;
-          if (length === undefined || length === null) {
-            setCartItems(0);
-          } else {
-            setCartItems(length);
-          }
-        } else {
-          return null;
+          setCartItems(response.data.cart?.length || 0);
+        } catch (error) {
+          console.log("Cannot fetch response: ", (error as any).message);
         }
-      } catch (error: any) {
-        console.log("Cannot fetch response: ", error.message);
+      };
+      fetchCartLength();
+    }
+
+    return () => {
+      // Clean up WebSocket connection on component unmount
+      if (socket) {
+        socket.disconnect();
       }
     };
-    fetchCartLength();
   }, [user]);
 
   const handleLogout = async () => {
@@ -102,8 +117,8 @@ const Navbar: React.FC = () => {
         autoClose: 5000,
         draggable: true,
       });
-    } catch (error: any) {
-      console.error("Error while logging out: ", error.message);
+    } catch (error) {
+      console.error("Error while logging out: ", (error as any).message);
     } finally {
       setLoading(false);
     }
