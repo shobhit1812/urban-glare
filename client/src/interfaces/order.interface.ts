@@ -2,6 +2,7 @@ interface Order {
   ownerId: string;
   products: {
     productId: string;
+    productName: string;
     quantity: number;
     price: number;
   }[];

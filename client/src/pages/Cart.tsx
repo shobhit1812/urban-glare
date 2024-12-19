@@ -40,6 +40,7 @@ const Cart: React.FC = () => {
 
       const productDetails = products.map((product) => ({
         productId: product.productId._id,
+        productName: product.productId.name,
         quantity: product.quantity,
         price: product.totalAmount,
       }));
