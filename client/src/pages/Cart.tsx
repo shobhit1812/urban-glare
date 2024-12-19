@@ -32,6 +32,7 @@ const Cart: React.FC = () => {
         }
       );
       setCartItems(response.data.cart);
+      // console.log(response.data.cart);
     } catch (error: unknown) {
       console.error("Error fetching cart items: ", error);
     } finally {
