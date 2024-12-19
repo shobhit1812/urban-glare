@@ -25,6 +25,11 @@ const orderSchema = new mongoose.Schema(
         },
       },
     ],
+    totalItem: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     totalPrice: {
       type: Number,
       required: true,
@@ -34,6 +39,10 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ["processing", "shipped", "delivered", "cancelled"],
       default: "processing",
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "credit-debit", "upi"],
     },
     shippingDetails: {
       address: {

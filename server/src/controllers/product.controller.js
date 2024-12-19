@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { v2 as cloudinary } from "cloudinary";
 import Product from "../models/product.model.js";
 import { validateProduct } from "../utils/validator.js";

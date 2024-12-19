@@ -1,9 +1,16 @@
+import axios from "axios";
+import User from "@/interfaces/user.interface";
 import Order from "@/interfaces/order.interface";
 
 import { useState } from "react";
-import { Label } from "@/components/ui/label";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ThreeDots } from "react-loader-spinner";
+import { BASE_URL } from "@/helpers/constants/server_url";
 import {
   Select,
   SelectGroup,
@@ -12,13 +19,17 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 
 const Checkout: React.FC = () => {
+  const [address, setAddress] = useState("");
+  const [country, setCountry] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const user: User = useSelector((state: RootState) => state.user);
   const checkout: Order = useSelector((state: RootState) => state.checkout);
 
-  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const navigate = useNavigate();
 
   const formattedTotalPrice = new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -26,12 +37,43 @@ const Checkout: React.FC = () => {
     maximumFractionDigits: 0,
   }).format(checkout.totalPrice);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  };
+    setIsLoading(true);
 
-  const [address, setAddress] = useState("");
-  const [country, setCountry] = useState("");
+    const orderData = {
+      products: checkout.products,
+      totalItem: checkout.totalItem,
+      totalPrice: checkout.totalPrice,
+      paymentMethod,
+      shippingDetails: {
+        address,
+        country,
+      },
+    };
+
+    try {
+      await axios.post(`${BASE_URL}/checkout/create-order`, orderData, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${user?.token}`, // Ensure the token exists
+        },
+      });
+
+      await axios.delete(`${BASE_URL}/cart/clear-cart`, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+        withCredentials: true,
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error creating order:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-8">
@@ -178,8 +220,18 @@ const Checkout: React.FC = () => {
 
         {/* Submit Button */}
         <div className="flex justify-end">
-          <Button type="submit" className="bg-blue-600 text-white">
-            Confirm Order
+          <Button
+            type="submit"
+            className="bg-blue-600 text-white"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <div className="flex justify-center items-center">
+                <ThreeDots color="#ffffff" height={24} width={24} />
+              </div>
+            ) : (
+              "Confirm Order"
+            )}
           </Button>
         </div>
       </form>
