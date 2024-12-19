@@ -2,10 +2,11 @@ import User from "@/interfaces/user.interface";
 import CartItem from "@/interfaces/cart.interface";
 
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import { setOrder } from "@/store/slices/checkout.slice";
 import { useCartActions } from "@/helpers/hooks/useCartActions";
 
 interface CartSummaryProps {
@@ -34,6 +35,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     maximumFractionDigits: 0,
   }).format(totalPrice);
 
+  const dispatch = useDispatch();
   const user: User = useSelector((state: RootState) => state.user);
 
   const navigate = useNavigate();
@@ -41,6 +43,12 @@ const CartSummary: React.FC<CartSummaryProps> = ({
   const handleProceedToPayment = () => {
     if (user?._id) {
       navigate("/checkout");
+      dispatch(
+        setOrder({
+          totalItem: totalItems,
+          totalPrice: totalPrice,
+        })
+      );
     } else {
       toast.error("Please Login!!!", {
         position: "bottom-right",

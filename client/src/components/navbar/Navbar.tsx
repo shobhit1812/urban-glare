@@ -15,6 +15,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "@/store/slices/user.slice";
 import { BASE_URL } from "@/helpers/constants/server_url";
+import { clearOrder } from "@/store/slices/checkout.slice";
 import { SOCKET_URL } from "@/helpers/constants/server_url";
 import { clearFavorites } from "@/store/slices/favorites.slice";
 import { clearProducts } from "@/store/slices/filteredProducts.slice";
@@ -112,6 +113,7 @@ const Navbar: React.FC = () => {
       });
       dispatch(removeUser({}));
       dispatch(clearFavorites());
+      dispatch(clearOrder());
       navigate("/");
       toast.success("Successfully logout!!!", {
         position: "bottom-right",

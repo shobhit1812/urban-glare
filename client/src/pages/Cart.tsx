@@ -8,14 +8,16 @@ import SliderCards from "@/components/others/SliderCards";
 import LoadingSpinner from "@/components/shimmer-effect/LoadingSpinner";
 
 import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setOrder } from "@/store/slices/checkout.slice";
 import { BASE_URL } from "@/helpers/constants/server_url";
 
 const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const dispatch = useDispatch();
   const user: User = useSelector((state: RootState) => state.user);
 
   const fetchCartItems = async () => {
@@ -31,8 +33,23 @@ const Cart: React.FC = () => {
           withCredentials: true,
         }
       );
-      setCartItems(response.data.cart);
-      // console.log(response.data.cart);
+
+      const products = response.data.cart;
+
+      setCartItems(products);
+
+      const productDetails = products.map((product) => ({
+        productId: product.productId._id,
+        quantity: product.quantity,
+        price: product.totalAmount,
+      }));
+
+      dispatch(
+        setOrder({
+          ownerId: user?._id,
+          products: productDetails,
+        })
+      );
     } catch (error: unknown) {
       console.error("Error fetching cart items: ", error);
     } finally {

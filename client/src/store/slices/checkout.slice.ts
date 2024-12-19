@@ -7,7 +7,10 @@ const checkoutSlice = createSlice({
   name: "checkout",
   initialState,
   reducers: {
-    setOrder: (_, action: PayloadAction<Order>) => action.payload,
+    setOrder: (state, action: PayloadAction<Partial<Order>>) => ({
+      ...state,
+      ...action.payload,
+    }),
     clearOrder: () => null,
   },
 });
