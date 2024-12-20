@@ -38,7 +38,7 @@ interface AdminComponentLink {
 }
 
 const userComponents: UserComponentLink[] = [
-  { title: "Orders", href: "/orders" },
+  { title: "Orders", href: "/user-order" },
   { title: "Wishlist", href: "/wishlist" },
   { title: "Customer Service", href: "/customer-service" },
   { title: "Settings", href: "/setting" },

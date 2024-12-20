@@ -17,6 +17,7 @@ import {
   CreateProduct,
   Products,
   ProductDetails,
+  UserOrders,
 } from "@/helpers/constants/Imports";
 
 // Reusable component for loading lazy components with fallback
@@ -113,6 +114,14 @@ const appRouter = createBrowserRouter([
         element: (
           <LazyLoad>
             <Checkout />
+          </LazyLoad>
+        ),
+      },
+      {
+        path: "user-order",
+        element: (
+          <LazyLoad>
+            <UserOrders />
           </LazyLoad>
         ),
       },
