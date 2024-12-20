@@ -54,10 +54,10 @@ const Checkout: React.FC = () => {
 
     try {
       await axios.post(`${BASE_URL}/checkout/create-order`, orderData, {
-        withCredentials: true,
         headers: {
-          Authorization: `Bearer ${user?.token}`, // Ensure the token exists
+          Authorization: `Bearer ${user?.token}`,
         },
+        withCredentials: true,
       });
 
       await axios.delete(`${BASE_URL}/cart/clear-cart`, {

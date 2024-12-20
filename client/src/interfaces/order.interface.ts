@@ -1,5 +1,9 @@
 interface Order {
   ownerId: string;
+  _id: string;
+  owner: {
+    email: string;
+  };
   products: {
     productId: string;
     productName: string;
@@ -9,6 +13,7 @@ interface Order {
   totalItem: number;
   totalPrice: number;
   status: "processing" | "shipped" | "delivered" | "cancelled";
+  paymentMethod: "cod" | "credit-debit" | "upi";
   shippingDetails: {
     address: string;
     country: string;
