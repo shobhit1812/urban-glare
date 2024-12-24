@@ -1,24 +1,24 @@
 import axios from "axios";
 import User from "@/interfaces/user.interface";
+import NO_ORDER from "@/assets/no_orders.webp";
 import Order from "@/interfaces/order.interface";
+import SliderCards from "@/components/others/SliderCards";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "@/helpers/constants/server_url";
 import { Button } from "@/components/ui/button";
+import { BASE_URL } from "@/helpers/constants/server_url";
 
 const UserOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const user: User = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
-      setError("");
 
       try {
         const response = await axios.get(
@@ -32,7 +32,6 @@ const UserOrders: React.FC = () => {
         );
         setOrders(response.data.orders);
       } catch (error) {
-        setError("Failed to fetch orders.");
         console.error("Error fetching orders:", error);
       } finally {
         setLoading(false);
@@ -48,8 +47,6 @@ const UserOrders: React.FC = () => {
 
       {loading ? (
         <p className="text-gray-500">Loading orders...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
       ) : orders.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {orders.map((order) => (
@@ -98,8 +95,18 @@ const UserOrders: React.FC = () => {
           ))}
         </div>
       ) : (
-        <p className="text-gray-600">You have no orders yet.</p>
+        <div className="text-center">
+          <img
+            src={NO_ORDER}
+            alt="No orders found"
+            className="mx-auto h-64 rounded-md w-auto"
+          />
+          <p className="text-gray-600 mt-4">You have no orders yet.</p>
+        </div>
       )}
+      <div className="pt-10">
+        <SliderCards />
+      </div>
     </div>
   );
 };
