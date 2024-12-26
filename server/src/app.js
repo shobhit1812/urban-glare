@@ -31,5 +31,4 @@ app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/favorite", favoriteRoutes);
 app.use("/api/v1/checkout", orderRoutes);
 
-export default app;
-export { server };
+export { app, server };
